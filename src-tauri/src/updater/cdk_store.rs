@@ -2,7 +2,7 @@ use super::errors;
 use crate::services::notes::AppError;
 use keyring::{Entry, Error as KeyringError};
 
-const SERVICE_NAME: &str = "floral-notepaper";
+const SERVICE_NAME: &str = "Renown";
 const MIRROR_CHYAN_CDK_ACCOUNT: &str = "mirrorchyan-cdk";
 
 #[derive(Debug, Clone)]

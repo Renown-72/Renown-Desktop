@@ -2,6 +2,7 @@ import { getVersion } from "@tauri-apps/api/app";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { APP_ISSUES_URL, APP_LICENSE_URL, APP_REPO, UPSTREAM_REPO } from "../config/app";
 import { UpdateSettingsSection } from "../features/update/UpdateSettingsSection";
 import contributorsData from "../generated/contributors.json";
 import { getTips, parseTip } from "../locales/tips";
@@ -83,15 +84,18 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
       <div className="flex-1 overflow-y-auto scrollbar-hidden px-4 py-4 space-y-5">
         <section className="space-y-1.5">
           <h3 className="text-[20px] font-serif font-medium text-ink-soft">
-            {t("about.productName", { defaultValue: "花笺" })}
+            {t("about.productName", { defaultValue: "Renown" })}
           </h3>
           <p className="text-[11px] text-ink-ghost font-body">
-            {t("about.summary", { defaultValue: "轻量、优雅、现代化的本地便签工具" })}
+            {t("about.summary", { defaultValue: "桌面整理与便签工具" })}
           </p>
           <p className="text-[11px] text-ink-ghost font-body">
-            Copyright © 2026 Floral Notepaper Contributors,
+            Copyright © 2026 Renown Contributors,
             <br />
             Licensed under the MIT License. <br />
+            <span className="text-ink-ghost/80">
+              Built on floral-notepaper (MIT) by Achilng and contributors.
+            </span>
           </p>
           {version && (
             <p className="text-[11px] text-ink-ghost font-mono">
@@ -106,7 +110,7 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
           <section className="space-y-1 py-2 border-y border-paper-deep/25">
             <button
               type="button"
-              onClick={() => void openUrl("https://github.com/Achilng/floral-notepaper")}
+              onClick={() => void openUrl(APP_REPO)}
               className="w-full h-8 px-1 flex items-center justify-between text-[11px] text-ink-faint hover:text-bamboo cursor-pointer transition-colors"
             >
               <span className="inline-flex items-center gap-1.5">
@@ -140,7 +144,7 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
             </button>
             <button
               type="button"
-              onClick={() => void openUrl("https://github.com/Achilng/floral-notepaper/issues")}
+              onClick={() => void openUrl(APP_ISSUES_URL)}
               className="w-full h-8 px-1 flex items-center justify-between text-[11px] text-ink-faint hover:text-bamboo cursor-pointer transition-colors"
             >
               <span className="inline-flex items-center gap-1.5">
@@ -175,7 +179,7 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
             <button
               type="button"
               onClick={() =>
-                void openUrl("https://github.com/Achilng/floral-notepaper/blob/main/LICENSE")
+                void openUrl(APP_LICENSE_URL)
               }
               className="w-full h-8 px-1 flex items-center justify-between text-[11px] text-ink-faint hover:text-bamboo cursor-pointer transition-colors"
             >
@@ -191,6 +195,40 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
                 </svg>
                 <span className="leading-none">
                   {t("about.license", { defaultValue: "许可证" })}
+                </span>
+              </span>
+              <span className="inline-flex items-center">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M6 3h7v7M13 3L3 13" />
+                </svg>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => void openUrl(UPSTREAM_REPO)}
+              className="w-full h-8 px-1 flex items-center justify-between text-[11px] text-ink-faint hover:text-bamboo cursor-pointer transition-colors"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="shrink-0"
+                >
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z" />
+                </svg>
+                <span className="leading-none">
+                  {t("about.upstream", { defaultValue: "上游项目（MIT）" })}
                 </span>
               </span>
               <span className="inline-flex items-center">

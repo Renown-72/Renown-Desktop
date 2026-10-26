@@ -20,13 +20,16 @@ use std::{
     time::Duration,
 };
 
-const MIRROR_CHYAN_MANIFEST_PATH_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_MIRROR_MANIFEST_PATH";
-const GITHUB_MANIFEST_PATH_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_GITHUB_MANIFEST_PATH";
-const GITHUB_REPO_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_GITHUB_REPO";
-const DEFAULT_GITHUB_REPO: &str = "Achilng/floral-notepaper";
+const MIRROR_CHYAN_MANIFEST_PATH_ENV: &str = "RENOWN_UPDATE_MIRROR_MANIFEST_PATH";
+const GITHUB_MANIFEST_PATH_ENV: &str = "RENOWN_UPDATE_GITHUB_MANIFEST_PATH";
+const GITHUB_REPO_ENV: &str = "RENOWN_UPDATE_GITHUB_REPO";
+// Renown: 本项目已从上游 floral-notepaper 分叉。默认留空,
+// 避免误从原作者仓库拉取不兼容的更新。需要启用自更新时,
+// 通过 RENOWN_UPDATE_GITHUB_REPO 环境变量或配置指定自有仓库。
+const DEFAULT_GITHUB_REPO: &str = "";
 const MIRROR_CHYAN_API_BASE: &str = "https://mirrorchyan.com/api/resources";
 const MIRROR_CHYAN_RES_ID: &str = "floral";
-const MIRROR_CHYAN_RES_ID_OVERRIDE_ENV: &str = "FLORAL_NOTEPAPER_MIRROR_CHYAN_RES_ID";
+const MIRROR_CHYAN_RES_ID_OVERRIDE_ENV: &str = "RENOWN_MIRROR_CHYAN_RES_ID";
 const MIRROR_CHYAN_USER_AGENT: &str = "floral_notepaper";
 
 fn mirror_chyan_res_id() -> &'static str {
@@ -123,7 +126,7 @@ impl MirrorChyanProvider {
         Self {
             manifest_path: env_manifest_path(MIRROR_CHYAN_MANIFEST_PATH_ENV),
             cdk: None,
-            offline: env::var("FLORAL_NOTEPAPER_UPDATE_OFFLINE").is_ok(),
+            offline: env::var("RENOWN_UPDATE_OFFLINE").is_ok(),
         }
     }
 
@@ -181,7 +184,7 @@ impl GithubProvider {
     pub fn from_env() -> Self {
         Self {
             manifest_path: env_manifest_path(GITHUB_MANIFEST_PATH_ENV),
-            offline: env::var("FLORAL_NOTEPAPER_UPDATE_OFFLINE").is_ok(),
+            offline: env::var("RENOWN_UPDATE_OFFLINE").is_ok(),
         }
     }
 
@@ -738,6 +741,12 @@ struct GithubApiRelease {
 
 fn fetch_latest_github_release() -> Result<GithubApiRelease, AppError> {
     let repo = github_repo();
+    // Renown: 未配置自有更新仓库时不发起请求,避免打到上游仓库。
+    if repo.trim().is_empty() {
+        return Err(errors::github_api_error(
+            "尚未配置更新仓库(RENOWN_UPDATE_GITHUB_REPO)".to_string(),
+        ));
+    }
     let url = format!("https://api.github.com/repos/{repo}/releases/latest");
 
     let client = build_github_api_client()?;

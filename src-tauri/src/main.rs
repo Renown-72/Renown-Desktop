@@ -8,10 +8,10 @@ fn main() {
         args.next().as_deref(),
         Some(flag) if flag == std::ffi::OsStr::new("--update-helper")
     ) {
-        let exit_code = floral_notepaper_lib::updater::helper::run_cli(args);
+        let exit_code = renown_lib::updater::helper::run_cli(args);
         std::process::exit(exit_code.as_i32());
     }
 
-    floral_notepaper_lib::try_exit_for_cli_version_or_help();
-    floral_notepaper_lib::run()
+    renown_lib::try_exit_for_cli_version_or_help();
+    renown_lib::run()
 }

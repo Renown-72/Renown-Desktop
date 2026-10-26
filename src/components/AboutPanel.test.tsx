@@ -29,8 +29,8 @@ describe("AboutPanel", () => {
     const markup = renderToStaticMarkup(<AboutPanel onClose={vi.fn()} />);
 
     expect(markup).toContain("关于");
-    expect(markup).toContain("花笺");
-    expect(markup).toContain("轻量、优雅、现代化的本地便签工具");
+    expect(markup).toContain("Renown");
+    expect(markup).toContain("桌面整理与便签工具");
     expect(markup).toContain("更新");
     // Update status has not hydrated yet: the update section shows a loading
     // placeholder instead of full update controls (avoids MSIX controls flash).

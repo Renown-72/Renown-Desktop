@@ -226,20 +226,20 @@ pub fn default_store() -> Result<NoteStore, AppError> {
 }
 
 pub(crate) fn default_config_dir() -> Result<PathBuf, AppError> {
-    if let Ok(path) = env::var("FLORAL_NOTEPAPER_CONFIG_DIR") {
+    if let Ok(path) = env::var("RENOWN_CONFIG_DIR") {
         let trimmed = path.trim();
         if !trimmed.is_empty() {
             return Ok(PathBuf::from(trimmed));
         }
     }
     if let Some(dir) = dirs::config_dir() {
-        return Ok(dir.join("floral-notepaper"));
+        return Ok(dir.join("Renown"));
     }
-    Ok(env::current_dir()?.join("floral-notepaper"))
+    Ok(env::current_dir()?.join("Renown"))
 }
 
 fn default_data_dir() -> Result<PathBuf, AppError> {
-    if let Ok(path) = env::var("FLORAL_NOTEPAPER_DATA_DIR") {
+    if let Ok(path) = env::var("RENOWN_DATA_DIR") {
         let trimmed = path.trim();
         if !trimmed.is_empty() {
             return Ok(PathBuf::from(trimmed));
@@ -248,18 +248,18 @@ fn default_data_dir() -> Result<PathBuf, AppError> {
 
     #[cfg(target_os = "macos")]
     if let Some(dir) = dirs::data_dir() {
-        return Ok(dir.join("花笺"));
+        return Ok(dir.join("Renown"));
     }
 
     if let Some(dir) = dirs::document_dir() {
-        return Ok(dir.join("花笺"));
+        return Ok(dir.join("Renown"));
     }
 
     Ok(env::current_dir()?.join("data"))
 }
 
 fn resolve_data_dir(config_dir: &Path) -> Result<PathBuf, AppError> {
-    if let Ok(path) = env::var("FLORAL_NOTEPAPER_DATA_DIR") {
+    if let Ok(path) = env::var("RENOWN_DATA_DIR") {
         let trimmed = path.trim();
         if !trimmed.is_empty() {
             return Ok(PathBuf::from(trimmed));
@@ -567,16 +567,16 @@ fn known_data_migration_candidates_for(
     let mut candidates = Vec::new();
     if let Some(home) = home {
         let home = PathBuf::from(home);
-        candidates.push(home.join("Documents").join("花笺"));
+        candidates.push(home.join("Documents").join("Renown"));
         candidates.push(
             home.join("Library")
                 .join("Application Support")
-                .join("花笺"),
+                .join("Renown"),
         );
     }
     if let Some(profile) = userprofile {
         let profile = PathBuf::from(profile);
-        candidates.push(profile.join("Documents").join("花笺"));
+        candidates.push(profile.join("Documents").join("Renown"));
     }
 
     candidates
@@ -714,7 +714,7 @@ impl NoteStore {
 
         let mut config: AppConfig = serde_json::from_str(&fs::read_to_string(&path)?)?;
         // config 中记录的 dataDir 是上次运行时数据所在位置；若本次 resolve 出的
-        // self.data_dir 与之不同（如 FLORAL_NOTEPAPER_DATA_DIR 被改），尝试搬运旧数据
+        // self.data_dir 与之不同（如 RENOWN_DATA_DIR 被改），尝试搬运旧数据
         self.migrate_data_dir_if_relocated(&mut config);
         config.data_dir = Some(self.data_dir.to_string_lossy().to_string());
         config.tab_indent_size = config.tab_indent_size.clamp(1, 8);
@@ -1505,7 +1505,7 @@ impl NoteStore {
     }
 
     // 跨重启自动迁移：config 持久化的 dataDir 与本次 resolve 的 self.data_dir 不一致时
-    // （典型为修改 FLORAL_NOTEPAPER_DATA_DIR 环境变量），把旧位置数据搬到新位置。
+    // （典型为修改 RENOWN_DATA_DIR 环境变量），把旧位置数据搬到新位置。
     // 关键不变量：仅当新位置尚无用户数据时才迁移，否则保留两边、不合并，避免交叉污染。
     // 失败不阻断启动——记录日志后继续，旧数据仍在原地不会丢失
     fn migrate_data_dir_if_relocated(&self, config: &mut AppConfig) {
@@ -1758,9 +1758,9 @@ mod tests {
     use std::{fs, path::PathBuf};
 
     fn test_root(name: &str) -> PathBuf {
-        let base = std::env::var_os("FLORAL_NOTEPAPER_TEST_TEMP_DIR")
+        let base = std::env::var_os("RENOWN_TEST_TEMP_DIR")
             .map(PathBuf::from)
-            .unwrap_or_else(|| std::env::temp_dir().join("floral-notepaper-rust-tests"));
+            .unwrap_or_else(|| std::env::temp_dir().join("renown-rust-tests"));
         let root = base.join(name);
         if root.exists() {
             fs::remove_dir_all(&root).expect("remove stale test root");
@@ -1943,17 +1943,17 @@ mod tests {
             Some(r"C:\Users\Alice".into()),
         );
 
-        assert!(candidates.contains(&PathBuf::from("/Users/alice").join("Documents").join("花笺")));
+        assert!(candidates.contains(&PathBuf::from("/Users/alice").join("Documents").join("Renown")));
         assert!(candidates.contains(
             &PathBuf::from("/Users/alice")
                 .join("Library")
                 .join("Application Support")
-                .join("花笺")
+                .join("Renown")
         ));
         assert!(candidates.contains(
             &PathBuf::from(r"C:\Users\Alice")
                 .join("Documents")
-                .join("花笺")
+                .join("Renown")
         ));
     }
 
@@ -2142,7 +2142,7 @@ mod tests {
             .exists());
     }
 
-    // 模拟 FLORAL_NOTEPAPER_DATA_DIR 改向新空目录：旧位置数据应自动迁移过来
+    // 模拟 RENOWN_DATA_DIR 改向新空目录：旧位置数据应自动迁移过来
     #[test]
     fn relocates_data_when_target_dir_is_empty() {
         let root = test_root("relocate-empty");

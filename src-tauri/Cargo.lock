@@ -1219,41 +1219,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "floral-notepaper"
-version = "1.2.0"
-dependencies = [
- "block2",
- "chrono",
- "dirs 6.0.0",
- "keyring",
- "libc",
- "objc2",
- "objc2-app-kit",
- "objc2-foundation",
- "raw-window-handle",
- "reqwest 0.12.28",
- "semver",
- "serde",
- "serde_json",
- "sha2",
- "tauri",
- "tauri-build",
- "tauri-plugin-autostart",
- "tauri-plugin-cli",
- "tauri-plugin-clipboard-manager",
- "tauri-plugin-dialog",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-opener",
- "tauri-plugin-single-instance",
- "tokio",
- "trash",
- "uuid",
- "webview2-com",
- "windows-core 0.61.2",
- "windows-sys 0.59.0",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3327,6 +3292,41 @@ name = "regex-syntax"
 version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
+
+[[package]]
+name = "renown"
+version = "0.1.0"
+dependencies = [
+ "block2",
+ "chrono",
+ "dirs 6.0.0",
+ "keyring",
+ "libc",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
+ "raw-window-handle",
+ "reqwest 0.12.28",
+ "semver",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-autostart",
+ "tauri-plugin-cli",
+ "tauri-plugin-clipboard-manager",
+ "tauri-plugin-dialog",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-opener",
+ "tauri-plugin-single-instance",
+ "tokio",
+ "trash",
+ "uuid",
+ "webview2-com",
+ "windows-core 0.61.2",
+ "windows-sys 0.59.0",
+]
 
 [[package]]
 name = "reqwest"

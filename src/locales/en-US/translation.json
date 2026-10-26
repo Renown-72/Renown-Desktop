@@ -5,8 +5,8 @@
     "feedback": "Feedback",
     "github": "GitHub",
     "license": "License",
-    "productName": "花笺",
-    "summary": "A lightweight, elegant, modern local note-taking tool",
+    "productName": "Renown",
+    "summary": "Desktop organizer and sticky notes",
     "tipPrefix": "Tip:",
     "title": "About",
     "version": "Version: v{{version}}"

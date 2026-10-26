@@ -1,19 +1,21 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+// Renown: 默认走 GitHub 源。MirrorChyan 是上游作者的第三方分发渠道,
+// 分叉后不应默认使用。仍保留枚举值以便用户手动切换。
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 #[serde(rename_all = "camelCase")]
 pub enum CheckSourcePreference {
-    #[default]
     MirrorChyanFirst,
+    #[default]
     GithubFirst,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 #[serde(rename_all = "camelCase")]
 pub enum DownloadSourcePreference {
-    #[default]
     MirrorChyanFirst,
+    #[default]
     GithubFirst,
 }
 

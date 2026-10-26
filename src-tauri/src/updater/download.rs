@@ -31,7 +31,7 @@ macro_rules! debug_log {
     ($($arg:tt)*) => { super::debug_log!("download", $($arg)*) };
 }
 
-const GITHUB_MANIFEST_PATH_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_GITHUB_MANIFEST_PATH";
+const GITHUB_MANIFEST_PATH_ENV: &str = "RENOWN_UPDATE_GITHUB_MANIFEST_PATH";
 const MAX_REDIRECTS: usize = 5;
 const PROGRESS_INTERVAL: Duration = Duration::from_millis(200);
 const RETRY_DELAYS: [Duration; 3] = [
@@ -1380,8 +1380,8 @@ mod tests {
         let manifest = format!(
             r#"{{
   "schemaVersion": 1,
-  "appId": "com.floral-notepaper.app",
-  "productName": "花笺",
+  "appId": "com.renown.desktop",
+  "productName": "Renown",
   "channel": "stable",
   "version": "1.0.5",
   "tag": "v1.0.5",
@@ -1448,8 +1448,8 @@ mod tests {
         let manifest = format!(
             r#"{{
   "schemaVersion": 1,
-  "appId": "com.floral-notepaper.app",
-  "productName": "花笺",
+  "appId": "com.renown.desktop",
+  "productName": "Renown",
   "channel": "stable",
   "version": "1.0.5",
   "tag": "v1.0.5",
@@ -1506,8 +1506,8 @@ mod tests {
         let manifest = format!(
             r#"{{
   "schemaVersion": 1,
-  "appId": "com.floral-notepaper.app",
-  "productName": "花笺",
+  "appId": "com.renown.desktop",
+  "productName": "Renown",
   "channel": "stable",
   "version": "1.0.5",
   "tag": "v1.0.5",

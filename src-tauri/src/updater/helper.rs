@@ -26,9 +26,9 @@ fn normalize_windows_path(value: &str) -> String {
 }
 
 #[cfg(target_os = "windows")]
-pub const HELPER_BINARY_NAME: &str = "floral-notepaper-update-helper.exe";
+pub const HELPER_BINARY_NAME: &str = "renown-update-helper.exe";
 #[cfg(not(target_os = "windows"))]
-pub const HELPER_BINARY_NAME: &str = "floral-notepaper-update-helper";
+pub const HELPER_BINARY_NAME: &str = "renown-update-helper";
 
 // Give the GUI process enough time to flush notes, WebView state, and filesystem buffers before
 // the helper treats the handoff as failed. A premature timeout leaves the update recoverable but
@@ -3559,15 +3559,15 @@ mod tests {
         let bundle = root.join("花笺.app");
         let macos_dir = bundle.join("Contents").join("MacOS");
         fs::create_dir_all(&macos_dir).expect("create macos dir");
-        fs::write(macos_dir.join("floral-notepaper"), b"binary").expect("write binary");
+        fs::write(macos_dir.join("Renown"), b"binary").expect("write binary");
 
         assert_eq!(
             expected_process_name(&bundle).as_deref(),
-            Some("floral-notepaper")
+            Some("Renown")
         );
         assert_eq!(
-            expected_process_name(&root.join("floral-notepaper")).as_deref(),
-            Some("floral-notepaper")
+            expected_process_name(&root.join("Renown")).as_deref(),
+            Some("Renown")
         );
     }
 
@@ -3578,10 +3578,10 @@ mod tests {
         let bundle = root.join("花笺.app");
         let macos_dir = bundle.join("Contents").join("MacOS");
         fs::create_dir_all(&macos_dir).expect("create macos dir");
-        fs::write(macos_dir.join("floral-notepaper"), b"binary").expect("write binary");
+        fs::write(macos_dir.join("Renown"), b"binary").expect("write binary");
         fs::write(macos_dir.join("helper"), b"binary").expect("write helper");
 
-        assert_eq!(expected_process_name(&bundle).as_deref(), Some("花笺"));
+        assert_eq!(expected_process_name(&bundle).as_deref(), Some("Renown"));
     }
 
     #[test]

@@ -228,8 +228,8 @@ mod tests {
     fn rejects_unsupported_schema() {
         let invalid = r#"{
           "schemaVersion": 2,
-          "appId": "com.floral-notepaper.app",
-          "productName": "花笺",
+          "appId": "com.renown.desktop",
+          "productName": "Renown",
           "channel": "stable",
           "version": "1.0.5",
           "tag": "v1.0.5",

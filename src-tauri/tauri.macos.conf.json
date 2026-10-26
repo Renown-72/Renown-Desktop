@@ -1,11 +1,11 @@
 {
-  "identifier": "com.floral-notepaper.app",
+  "identifier": "com.renown.desktop",
   "app": {
     "macOSPrivateApi": true,
     "windows": [
       {
         "label": "main",
-        "title": "花笺",
+        "title": "Renown",
         "width": 1180,
         "height": 760,
         "minWidth": 900,

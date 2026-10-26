@@ -11,7 +11,9 @@ use std::{
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct StoredUpdateSettings {
-    #[serde(default = "default_true")]
+    // Renown: 默认关闭自动检查更新。
+    // 分叉后尚未配置自有更新仓库,自动更新会打到上游,必须显式开启才生效。
+    #[serde(default)]
     pub auto_check: bool,
     #[serde(default)]
     pub auto_download: bool,
@@ -132,6 +134,7 @@ fn normalize_check_interval(value: u32) -> u32 {
     value.clamp(1, 24 * 30)
 }
 
+#[allow(dead_code)]
 fn default_true() -> bool {
     true
 }

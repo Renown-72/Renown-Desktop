@@ -1,12 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "花笺",
-  "version": "1.2.0",
-  "identifier": "com.floral-notepaper.app",
+  "productName": "Renown",
+  "version": "0.1.0",
+  "identifier": "com.renown.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "taskkill /F /IM floral-notepaper.exe 2>nul & taskkill /F /IM 花笺.exe 2>nul & npm run build",
+    "beforeBuildCommand": "taskkill /F /IM renown.exe 2>nul & taskkill /F /IM Renown.exe 2>nul & npm run build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "花笺",
+        "title": "Renown",
         "width": 1180,
         "height": 760,
         "minWidth": 900,
@@ -35,38 +35,16 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app", "dmg", "nsis", "deb", "rpm", "appimage"],
-    "linux": {
-      "appimage": {
-        "bundleMediaFramework": false
-      }
-    },
-    "macOS": {
-      "minimumSystemVersion": "15.0"
-    },
+    "targets": ["nsis"],
     "windows": {
       "nsis": {
-        "installMode": "both",
-        "languages": ["SimpChinese"],
+        "installMode": "currentUser",
+        "languages": ["SimpChinese", "English"],
         "displayLanguageSelector": false,
         "installerIcon": "icons/icon.ico",
         "installerHooks": "nsis-hooks.nsh"
       }
     },
-    "fileAssociations": [
-      {
-        "ext": ["md", "markdown"],
-        "name": "Markdown Document",
-        "description": "Markdown document file",
-        "role": "Editor"
-      },
-      {
-        "ext": ["txt"],
-        "name": "Text Document",
-        "description": "Plain text file",
-        "role": "Editor"
-      }
-    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -77,7 +55,7 @@
   },
   "plugins": {
     "cli": {
-      "description": "Floral Notepaper - lightweight local note app",
+      "description": "Renown - desktop organizer and sticky notes",
       "args": []
     }
   }

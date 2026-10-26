@@ -1,7 +1,7 @@
 {
-  "productName": "floral-notepaper",
-  "version": "1.0.4",
-  "identifier": "com.floral-notepaper.app",
+  "productName": "Renown",
+  "version": "0.1.0",
+  "identifier": "com.renown.desktop",
   "bundle": {
     "linux": {
       "deb": {

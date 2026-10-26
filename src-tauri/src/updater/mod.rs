@@ -36,7 +36,7 @@ use std::{
 };
 use uuid::Uuid;
 
-pub const APP_ID: &str = "com.floral-notepaper.app";
+pub const APP_ID: &str = "com.renown.desktop";
 
 pub(super) fn sha256_hex(path: &Path) -> Result<String, std::io::Error> {
     use sha2::{Digest, Sha256};
@@ -480,7 +480,7 @@ fn default_updates_dir() -> PathBuf {
 
     env::current_dir()
         .unwrap_or_else(|_| env::temp_dir())
-        .join("floral-notepaper")
+        .join("Renown")
         .join("updates")
 }
 

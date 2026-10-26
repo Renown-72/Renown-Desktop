@@ -1,10 +1,10 @@
 [package]
-name = "floral-notepaper"
-version = "1.2.0"
-description = "A lightweight cross-platform desktop note app"
-authors = ["Achilng"]
+name = "renown"
+version = "0.1.0"
+description = "Renown - desktop organizer and sticky notes"
+authors = ["Renown Contributors"]
 edition = "2021"
-default-run = "floral-notepaper"
+default-run = "renown"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -12,7 +12,7 @@ default-run = "floral-notepaper"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "floral_notepaper_lib"
+name = "renown_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

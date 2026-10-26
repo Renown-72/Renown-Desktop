@@ -18,8 +18,8 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
-const UPDATE_HELPER_PATH_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_HELPER_PATH";
-const UPDATE_HELPER_MODE_ENV: &str = "FLORAL_NOTEPAPER_UPDATE_HELPER_MODE";
+const UPDATE_HELPER_PATH_ENV: &str = "RENOWN_UPDATE_HELPER_PATH";
+const UPDATE_HELPER_MODE_ENV: &str = "RENOWN_UPDATE_HELPER_MODE";
 
 macro_rules! debug_log {
     ($($arg:tt)*) => { super::debug_log!("install", $($arg)*) };
@@ -968,7 +968,7 @@ mod tests {
                 bundle
                     .join("Contents")
                     .join("MacOS")
-                    .join("floral-notepaper")
+                    .join("Renown")
                     .to_string_lossy()
                     .to_string(),
             ),
@@ -980,7 +980,7 @@ mod tests {
         let app_binary = bundle
             .join("Contents")
             .join("MacOS")
-            .join("floral-notepaper");
+            .join("Renown");
         let helper_binary = bundle
             .join("Contents")
             .join("MacOS")
@@ -999,7 +999,7 @@ mod tests {
         let app_binary = bundle
             .join("Contents")
             .join("MacOS")
-            .join("floral-notepaper");
+            .join("Renown");
 
         let executor = FakeExecutor::new(FakeExecutorResult::Success);
         let service = UpdateInstallService::with_executor(
@@ -1043,7 +1043,7 @@ mod tests {
         let app_binary = bundle
             .join("Contents")
             .join("MacOS")
-            .join("floral-notepaper");
+            .join("Renown");
 
         let executor = FakeExecutor::new(FakeExecutorResult::Success);
         let service = UpdateInstallService::with_executor(
@@ -1139,7 +1139,7 @@ mod tests {
         let app_binary = bundle
             .join("Contents")
             .join("MacOS")
-            .join("floral-notepaper");
+            .join("Renown");
         let executor = FakeExecutor::new(FakeExecutorResult::Error(errors::app_error(
             "updateInstallSpawnFailed",
             "启动更新安装助手失败：boom",
@@ -1169,7 +1169,7 @@ mod tests {
         let app_binary = bundle
             .join("Contents")
             .join("MacOS")
-            .join("floral-notepaper");
+            .join("Renown");
         let executor = FakeExecutor::new(FakeExecutorResult::PersistFailedStateThenSuccess);
         let service = UpdateInstallService::with_executor(
             executor,

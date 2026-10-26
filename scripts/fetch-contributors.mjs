@@ -10,17 +10,27 @@ function writeContributors(contributors) {
   writeFileSync(OUTPUT, JSON.stringify(contributors, null, 2) + "\n");
 }
 
-const REPO = "Achilng/floral-notepaper";
-const API_URL = `https://api.github.com/repos/${REPO}/contributors?per_page=100`;
+// Renown: 本项目基于 floral-notepaper 分叉(MIT)。
+// 构建期不再自动拉取上游贡献者头像,避免把原作者信息当作本应用作者展示。
+// 上游署名保留在 THIRD_PARTY_NOTICES.md 与 README 中。
+// 如需启用,设置 RENOWN_UPSTREAM_REPO="owner/repo"。
+const REPO = process.env.RENOWN_UPSTREAM_REPO || "";
 
 async function fetchContributors() {
-  const headers = { "User-Agent": "floral-notepaper-build" };
+  if (!REPO) {
+    return [];
+  }
+
+  const headers = { "User-Agent": "renown-build" };
   const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(API_URL, { headers });
+  const res = await fetch(
+    `https://api.github.com/repos/${REPO}/contributors?per_page=100`,
+    { headers },
+  );
   if (!res.ok) {
     throw new Error(`GitHub API responded ${res.status}: ${res.statusText}`);
   }
