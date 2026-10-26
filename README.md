@@ -9,14 +9,14 @@
 
 ## 当前状态
 
-| 项目 | 状态 |
-|---|---|
-| 技术栈 | Tauri 2 + Rust + React 19 + TypeScript |
-| 前端构建 | ✅ `npm run build` 通过 |
-| 后端编译 | ✅ `cargo check` / `cargo test` 通过（148 项） |
-| 前端测试 | ✅ `npm test` 通过（110 项） |
-| 可执行文件 | ✅ `npx tauri build` 产出 |
-| 桌面整理功能 | ⬜ 待开发（见路线图） |
+| 项目         | 状态                                           |
+| ------------ | ---------------------------------------------- |
+| 技术栈       | Tauri 2 + Rust + React 19 + TypeScript         |
+| 前端构建     | ✅ `npm run build` 通过                        |
+| 后端编译     | ✅ `cargo check` / `cargo test` 通过（148 项） |
+| 前端测试     | ✅ `npm test` 通过（110 项）                   |
+| 可执行文件   | ✅ `npx tauri build` 产出                      |
+| 桌面整理功能 | ⬜ 待开发（见路线图）                          |
 
 ## 环境要求
 
@@ -56,25 +56,25 @@ npx tsc --noEmit                                      # 类型检查
 
 ### 1. 品牌与标识
 
-| 位置 | 改动 |
-|---|---|
-| `tauri.conf.json` | `productName` → `Renown`，`identifier` → `com.renown.desktop`，版本 `0.1.0` |
-| `Cargo.toml` | 包名 `floral-notepaper` → `renown`，lib `renown_lib` |
-| `package.json` | `name` → `renown`，`version` → `0.1.0` |
-| `index.html` / 窗口标题 / 托盘文案 | 三语统一为 `Renown` |
-| `src/locales/*/translation.json` | `about.productName`、`about.summary` 更新 |
+| 位置                               | 改动                                                                        |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| `tauri.conf.json`                  | `productName` → `Renown`，`identifier` → `com.renown.desktop`，版本 `0.1.0` |
+| `Cargo.toml`                       | 包名 `floral-notepaper` → `renown`，lib `renown_lib`                        |
+| `package.json`                     | `name` → `renown`，`version` → `0.1.0`                                      |
+| `index.html` / 窗口标题 / 托盘文案 | 三语统一为 `Renown`                                                         |
+| `src/locales/*/translation.json`   | `about.productName`、`about.summary` 更新                                   |
 
 ### 2. ⚠️ 安全相关：切除上游的更新与分发链路
 
 这部分**必须改**，否则你的用户会收到来自原作者服务器的更新，或把 bug 报给上游：
 
-| 隐患 | 处理 |
-|---|---|
-| 自更新器默认指向 `Achilng/floral-notepaper` | `DEFAULT_GITHUB_REPO` 置空 + 空值直接返回错误；改用 `RENOWN_UPDATE_GITHUB_REPO` 环境变量指定自有仓库 |
-| 默认自动检查更新 | `auto_check` 默认值改为 `false` |
-| 默认更新源为 MirrorChyan（上游第三方分发） | `CheckSourcePreference` / `DownloadSourcePreference` 默认改为 `GithubFirst` |
-| 构建期拉取上游贡献者头像展示为"作者" | `scripts/fetch-contributors.mjs` 不再自动请求，需显式设 `RENOWN_UPSTREAM_REPO` |
-| "关于"页的 GitHub / 反馈 / 许可证链接指向上游 | 收敛到 `src/config/app.ts`，改一处即可 |
+| 隐患                                          | 处理                                                                                                 |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 自更新器默认指向 `Achilng/floral-notepaper`   | `DEFAULT_GITHUB_REPO` 置空 + 空值直接返回错误；改用 `RENOWN_UPDATE_GITHUB_REPO` 环境变量指定自有仓库 |
+| 默认自动检查更新                              | `auto_check` 默认值改为 `false`                                                                      |
+| 默认更新源为 MirrorChyan（上游第三方分发）    | `CheckSourcePreference` / `DownloadSourcePreference` 默认改为 `GithubFirst`                          |
+| 构建期拉取上游贡献者头像展示为"作者"          | `scripts/fetch-contributors.mjs` 不再自动请求，需显式设 `RENOWN_UPSTREAM_REPO`                       |
+| "关于"页的 GitHub / 反馈 / 许可证链接指向上游 | 收敛到 `src/config/app.ts`，改一处即可                                                               |
 
 ### 3. 数据隔离
 

@@ -3561,10 +3561,7 @@ mod tests {
         fs::create_dir_all(&macos_dir).expect("create macos dir");
         fs::write(macos_dir.join("Renown"), b"binary").expect("write binary");
 
-        assert_eq!(
-            expected_process_name(&bundle).as_deref(),
-            Some("Renown")
-        );
+        assert_eq!(expected_process_name(&bundle).as_deref(), Some("Renown"));
         assert_eq!(
             expected_process_name(&root.join("Renown")).as_deref(),
             Some("Renown")

@@ -977,10 +977,7 @@ mod tests {
     }
 
     fn write_bundle_with_helper(bundle: &Path) {
-        let app_binary = bundle
-            .join("Contents")
-            .join("MacOS")
-            .join("Renown");
+        let app_binary = bundle.join("Contents").join("MacOS").join("Renown");
         let helper_binary = bundle
             .join("Contents")
             .join("MacOS")
@@ -996,10 +993,7 @@ mod tests {
         paths.ensure_dirs().expect("ensure dirs");
         let bundle = paths.root_dir().join("Floral Notepaper.app");
         write_bundle_with_helper(&bundle);
-        let app_binary = bundle
-            .join("Contents")
-            .join("MacOS")
-            .join("Renown");
+        let app_binary = bundle.join("Contents").join("MacOS").join("Renown");
 
         let executor = FakeExecutor::new(FakeExecutorResult::Success);
         let service = UpdateInstallService::with_executor(
@@ -1040,10 +1034,7 @@ mod tests {
         paths.ensure_dirs().expect("ensure dirs");
         let bundle = paths.root_dir().join("Floral Notepaper.app");
         write_bundle_with_helper(&bundle);
-        let app_binary = bundle
-            .join("Contents")
-            .join("MacOS")
-            .join("Renown");
+        let app_binary = bundle.join("Contents").join("MacOS").join("Renown");
 
         let executor = FakeExecutor::new(FakeExecutorResult::Success);
         let service = UpdateInstallService::with_executor(
@@ -1136,10 +1127,7 @@ mod tests {
         paths.ensure_dirs().expect("ensure dirs");
         let bundle = paths.root_dir().join("Floral Notepaper.app");
         write_bundle_with_helper(&bundle);
-        let app_binary = bundle
-            .join("Contents")
-            .join("MacOS")
-            .join("Renown");
+        let app_binary = bundle.join("Contents").join("MacOS").join("Renown");
         let executor = FakeExecutor::new(FakeExecutorResult::Error(errors::app_error(
             "updateInstallSpawnFailed",
             "启动更新安装助手失败：boom",
@@ -1166,10 +1154,7 @@ mod tests {
         paths.ensure_dirs().expect("ensure dirs");
         let bundle = paths.root_dir().join("Floral Notepaper.app");
         write_bundle_with_helper(&bundle);
-        let app_binary = bundle
-            .join("Contents")
-            .join("MacOS")
-            .join("Renown");
+        let app_binary = bundle.join("Contents").join("MacOS").join("Renown");
         let executor = FakeExecutor::new(FakeExecutorResult::PersistFailedStateThenSuccess);
         let service = UpdateInstallService::with_executor(
             executor,

@@ -1943,7 +1943,11 @@ mod tests {
             Some(r"C:\Users\Alice".into()),
         );
 
-        assert!(candidates.contains(&PathBuf::from("/Users/alice").join("Documents").join("Renown")));
+        assert!(candidates.contains(
+            &PathBuf::from("/Users/alice")
+                .join("Documents")
+                .join("Renown")
+        ));
         assert!(candidates.contains(
             &PathBuf::from("/Users/alice")
                 .join("Library")

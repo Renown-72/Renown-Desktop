@@ -178,9 +178,7 @@ export function AboutPanel({ onClose }: AboutPanelProps) {
             </button>
             <button
               type="button"
-              onClick={() =>
-                void openUrl(APP_LICENSE_URL)
-              }
+              onClick={() => void openUrl(APP_LICENSE_URL)}
               className="w-full h-8 px-1 flex items-center justify-between text-[11px] text-ink-faint hover:text-bamboo cursor-pointer transition-colors"
             >
               <span className="inline-flex items-center gap-1.5">

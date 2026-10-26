@@ -265,10 +265,7 @@ mod tests {
         assert_eq!(app_name(Locale::EnUs), "Renown");
         assert_eq!(app_name(Locale::ZhHk), "Renown");
 
-        assert_eq!(
-            notepad_window_title(Locale::EnUs),
-            "Renown Quick Note"
-        );
+        assert_eq!(notepad_window_title(Locale::EnUs), "Renown Quick Note");
         assert_eq!(tile_window_title(Locale::ZhHk), "Renown 磁貼");
         assert_eq!(tray_tooltip(Locale::EnUs), "Renown");
         assert_eq!(tray_show_main_label(Locale::EnUs), "Open Main Window");
@@ -289,17 +286,11 @@ mod tests {
         assert_eq!(macos_menu_window_label(Locale::ZhHk), "視窗");
         assert_eq!(macos_menu_help_label(Locale::ZhCn), "帮助");
         assert_eq!(macos_menu_about_label(Locale::ZhCn), "关于Renown");
-        assert_eq!(
-            macos_menu_about_label(Locale::EnUs),
-            "About Renown"
-        );
+        assert_eq!(macos_menu_about_label(Locale::EnUs), "About Renown");
         assert_eq!(macos_menu_services_label(Locale::ZhHk), "服務");
         assert_eq!(macos_menu_hide_app_label(Locale::ZhCn), "隐藏Renown");
         assert_eq!(macos_menu_hide_others_label(Locale::EnUs), "Hide Others");
-        assert_eq!(
-            macos_menu_quit_app_label(Locale::EnUs),
-            "Quit Renown"
-        );
+        assert_eq!(macos_menu_quit_app_label(Locale::EnUs), "Quit Renown");
         assert_eq!(macos_menu_close_window_label(Locale::ZhHk), "關閉視窗");
         assert_eq!(macos_menu_minimize_label(Locale::EnUs), "Minimize");
         assert_eq!(macos_menu_zoom_label(Locale::ZhCn), "缩放");
