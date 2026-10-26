@@ -86,33 +86,29 @@ npx tsc --noEmit                                      # 类型检查
 
 ---
 
-## 待办：把 GitHub fork 接上
+## 仓库与上游同步
 
-当前是本地仓库（保留了上游完整 git 历史）。接上 GitHub 的步骤：
+本项目托管在 **https://github.com/Renown-72/Renown-Desktop**，
+是 [floral-notepaper](https://github.com/Achilng/floral-notepaper) 的 GitHub fork。
 
-```powershell
-# 1) 在 GitHub 上 Fork：https://github.com/Achilng/floral-notepaper  → 点 Fork
-# 2) 改 remote 指向你自己的 fork
-git remote rename origin upstream
-git remote add origin https://github.com/<你的用户名>/Renown-Desktop.git
+remote 约定：
 
-# 3) 提交本次改造
-git add -A
-git commit -m "chore: rebrand to Renown and detach upstream update channel"
+| remote | 地址 | 用途 |
+|---|---|---|
+| `origin` | `https://github.com/Renown-72/Renown-Desktop.git` | 本项目，日常提交推送 |
+| `upstream` | `https://github.com/Achilng/floral-notepaper.git` | 上游，只读同步 |
 
-# 4) 推送
-git push -u origin main
-```
-
-之后同步上游更新：
+同步上游更新：
 
 ```powershell
 git fetch upstream
 git merge upstream/main    # 或 git rebase upstream/main
 ```
 
-> 同步上游时**注意保留**上述第 2、3 节的改动，避免上游的更新器配置被 merge 回来覆盖。
-> 建议在 CI 中加一条检查。
+> ⚠️ **同步上游时务必保留**上述第 2、3 节的改动。特别是
+> `DEFAULT_GITHUB_REPO`、`auto_check` 默认值、`APP_ID`、数据目录名，
+> 这些若被上游覆盖，会导致应用去拉上游的更新包、或与原版应用共用数据目录。
+> 建议每次 merge 后运行 `npm test` 与 `cargo test`——相关断言已覆盖这些约束。
 
 ---
 
