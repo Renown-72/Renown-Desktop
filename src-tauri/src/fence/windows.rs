@@ -75,6 +75,10 @@ pub fn open_fence(app: &AppHandle, fence: &Fence, areas: &[monitor::WorkArea]) -
         .skip_taskbar(true)
         .focused(false)
         .visible(false)
+        // 关闭 Tauri 的原生文件拖放拦截，否则它会吞掉页面内的 HTML5 拖放事件，
+        // 栅栏内的图标拖拽排序就完全失效。代价是不能再从资源管理器把文件
+        // 直接拖进栅栏窗口（跨栅栏移动仍可用右键菜单）。
+        .drag_and_drop(false)
         .build();
 
     match built {

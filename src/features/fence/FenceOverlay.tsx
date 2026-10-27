@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import {
   applyDesktopLayer,
   assignItem,
+  deleteFence,
   openItem,
+  renameFence,
+  reorderItems,
   setActiveTab,
   setRolledUp,
   setView,
@@ -11,6 +14,7 @@ import {
   unassignItem,
 } from "./api";
 import type { Fence, FenceView, Item, ViewLayout } from "./types";
+import { computeReorder } from "./reorder";
 import { useFenceConfig, useIcons } from "./useFenceConfig";
 import "./fence.css";
 
@@ -22,6 +26,15 @@ const VIEW_LABEL: Record<ViewLayout, string> = {
   list: "列表",
   details: "详情",
 };
+
+/** 拖动到目标元素的哪一半：前半插入到它之前，后半插入到它之后。 */
+type DropEdge = "before" | "after";
+
+interface DragState {
+  itemId: string;
+  overId: string | null;
+  edge: DropEdge;
+}
 
 interface Props {
   fenceId: string;
@@ -36,6 +49,11 @@ interface Props {
 export function FenceOverlay({ fenceId }: Props) {
   const { config, error } = useFenceConfig();
   const [menu, setMenu] = useState<{ x: number; y: number; itemId: string } | null>(null);
+  const [fenceMenu, setFenceMenu] = useState<{ x: number; y: number } | null>(null);
+  const [drag, setDrag] = useState<DragState | null>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [draftTitle, setDraftTitle] = useState("");
+  const renameRef = useRef<HTMLInputElement | null>(null);
 
   // 窗口落到桌面层（不抢焦点、压在普通窗口之下）
   useEffect(() => {
@@ -129,17 +147,114 @@ export function FenceOverlay({ fenceId }: Props) {
     setMenu(null);
   }, []);
 
+  // ── 重命名 ────────────────────────────────────────────────
+  const startRename = useCallback(() => {
+    if (!fence) return;
+    setDraftTitle(fence.title);
+    setRenaming(true);
+    setFenceMenu(null);
+    // 下一帧聚焦并全选
+    requestAnimationFrame(() => {
+      renameRef.current?.focus();
+      renameRef.current?.select();
+    });
+  }, [fence]);
+
+  const commitRename = useCallback(async () => {
+    if (!fence) return;
+    const next = draftTitle.trim();
+    setRenaming(false);
+    if (!next || next === fence.title) return;
+    await renameFence(fence.id, next);
+  }, [draftTitle, fence]);
+
+  const handleDelete = useCallback(async () => {
+    if (!fence) return;
+    setFenceMenu(null);
+    await deleteFence(fence.id);
+    await syncWindows();
+  }, [fence]);
+
+  // ── 拖拽排序 ──────────────────────────────────────────────
+  const onItemDragStart = useCallback(
+    (e: React.DragEvent, itemId: string) => {
+      // 只允许在「手动」排序下拖动，否则拖完顺序会被排序规则覆盖
+      if (shown?.view.sort !== "manual") {
+        e.preventDefault();
+        return;
+      }
+      e.dataTransfer.effectAllowed = "move";
+      // 必须设置数据，否则部分平台不会触发 drop
+      e.dataTransfer.setData("application/x-renown-item", itemId);
+      e.dataTransfer.setData("text/plain", itemId);
+      setDrag({ itemId, overId: null, edge: "after" });
+    },
+    [shown],
+  );
+
+  const onItemDragOver = useCallback(
+    (e: React.DragEvent, itemId: string) => {
+      if (!drag || drag.itemId === itemId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const vertical = shown?.view.layout !== "grid";
+      const mid = vertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+      const pos = vertical ? e.clientY : e.clientX;
+      const edge: DropEdge = pos < mid ? "before" : "after";
+      if (drag.overId !== itemId || drag.edge !== edge) {
+        setDrag({ ...drag, overId: itemId, edge });
+      }
+    },
+    [drag, shown],
+  );
+
+  const onItemDrop = useCallback(
+    async (e: React.DragEvent, itemId: string) => {
+      e.preventDefault();
+      // 以 dataTransfer 里的 id 为准：dragstart 与 drop 可能落在同一帧里，
+      // 此时 React 的 drag 状态还没提交，只看 state 会拿到 null。
+      const fromId =
+        e.dataTransfer.getData("application/x-renown-item") ||
+        e.dataTransfer.getData("text/plain") ||
+        drag?.itemId ||
+        "";
+      // 落点边界直接从事件坐标算，不依赖 dragover 阶段的 state。
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const vertical = shown?.view.layout !== "grid";
+      const mid = vertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+      const pos = vertical ? e.clientY : e.clientX;
+      const edge: DropEdge = pos < mid ? "before" : "after";
+      setDrag(null);
+      if (!fromId || !shown) return;
+
+      const order = computeReorder(
+        items.map((i) => i.id),
+        fromId,
+        itemId,
+        edge,
+      );
+      if (order) await reorderItems(shown.id, order);
+    },
+    [drag, items, shown],
+  );
+
+  const onItemDragEnd = useCallback(() => setDrag(null), []);
+
   // 点击空白关闭右键菜单
   useEffect(() => {
-    if (!menu) return;
-    const close = () => setMenu(null);
+    if (!menu && !fenceMenu) return;
+    const close = () => {
+      setMenu(null);
+      setFenceMenu(null);
+    };
     window.addEventListener("click", close);
     window.addEventListener("blur", close);
     return () => {
       window.removeEventListener("click", close);
       window.removeEventListener("blur", close);
     };
-  }, [menu]);
+  }, [menu, fenceMenu]);
 
   if (error) {
     return (
@@ -157,6 +272,7 @@ export function FenceOverlay({ fenceId }: Props) {
   // 标签页宿主显示自己的标题，当前标签由标签条高亮表示。
   const title = fence.title;
   const count = items.length;
+  const manualSort = shown?.view.sort === "manual";
   const otherFences = (layout?.fences ?? []).filter(
     (f) => f.id !== shown?.id && f.tabHost === null,
   );
@@ -164,10 +280,36 @@ export function FenceOverlay({ fenceId }: Props) {
   return (
     <div className={`fence-shell fence-${shown?.view.layout ?? "grid"}`}>
       {/* 标题栏：可拖动整个窗口 */}
-      <div className="fence-titlebar" data-tauri-drag-region>
-        <span className="fence-title" data-tauri-drag-region>
-          {title}
-        </span>
+      <div
+        className="fence-titlebar"
+        data-tauri-drag-region
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setFenceMenu({ x: e.clientX, y: e.clientY });
+        }}
+      >
+        {renaming ? (
+          <input
+            ref={renameRef}
+            className="fence-title-input"
+            value={draftTitle}
+            onChange={(e) => setDraftTitle(e.target.value)}
+            onBlur={() => void commitRename()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void commitRename();
+              if (e.key === "Escape") setRenaming(false);
+            }}
+          />
+        ) : (
+          <span
+            className="fence-title"
+            data-tauri-drag-region
+            title="双击重命名"
+            onDoubleClick={startRename}
+          >
+            {title}
+          </span>
+        )}
         <span className="fence-count">{count}</span>
         <div className="fence-actions">
           <button
@@ -208,47 +350,76 @@ export function FenceOverlay({ fenceId }: Props) {
 
       {/* 内容区 */}
       {!fence.rolledUp && (
-        <div className="fence-body">
+        <div
+          className="fence-body"
+          onContextMenu={(e) => {
+            if (e.target === e.currentTarget) {
+              e.preventDefault();
+              setFenceMenu({ x: e.clientX, y: e.clientY });
+            }
+          }}
+        >
           {items.length === 0 ? (
-            <div className="fence-empty">空栅栏 · 把桌面文件拖进来</div>
+            <div className="fence-empty">空栅栏 · 右键菜单可从其它栅栏移入</div>
           ) : (
             <div className={`fence-items fence-items-${shown?.view.layout ?? "grid"}`}>
-              {items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className="fence-item"
-                  title={item.path ?? item.displayName}
-                  onDoubleClick={() => void handleOpen(item)}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    setMenu({ x: e.clientX, y: e.clientY, itemId: item.id });
-                  }}
-                >
-                  <span className="fence-item-icon">
-                    {icons[item.id] ? (
-                      <img src={icons[item.id]} alt="" draggable={false} />
-                    ) : (
-                      <span className="fence-item-icon-fallback">
-                        {item.isFolder ? "📁" : "📄"}
-                      </span>
+              {items.map((item) => {
+                const isDragging = drag?.itemId === item.id;
+                const isOver = drag?.overId === item.id && drag.itemId !== item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`fence-item${isDragging ? " is-dragging" : ""}${
+                      isOver ? ` is-drop-${drag.edge}` : ""
+                    }`}
+                    title={
+                      manualSort
+                        ? `${item.path ?? item.displayName}（可拖动排序）`
+                        : (item.path ?? item.displayName)
+                    }
+                    draggable={manualSort}
+                    onDragStart={(e) => onItemDragStart(e, item.id)}
+                    onDragOver={(e) => onItemDragOver(e, item.id)}
+                    onDrop={(e) => void onItemDrop(e, item.id)}
+                    onDragEnd={onItemDragEnd}
+                    onDoubleClick={() => void handleOpen(item)}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMenu({ x: e.clientX, y: e.clientY, itemId: item.id });
+                    }}
+                  >
+                    <span className="fence-item-icon">
+                      {icons[item.id] ? (
+                        <img src={icons[item.id]} alt="" draggable={false} />
+                      ) : (
+                        <span className="fence-item-icon-fallback">
+                          {item.isFolder ? "📁" : "📄"}
+                        </span>
+                      )}
+                    </span>
+                    <span className="fence-item-name">{item.displayName}</span>
+                    {shown?.view.layout === "details" && (
+                      <>
+                        <span className="fence-item-meta">{formatSize(item.size)}</span>
+                        <span className="fence-item-meta">{formatDate(item.mtime)}</span>
+                      </>
                     )}
-                  </span>
-                  <span className="fence-item-name">{item.displayName}</span>
-                  {shown?.view.layout === "details" && (
-                    <>
-                      <span className="fence-item-meta">{formatSize(item.size)}</span>
-                      <span className="fence-item-meta">{formatDate(item.mtime)}</span>
-                    </>
-                  )}
-                </button>
-              ))}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {!manualSort && items.length > 0 && (
+            <div className="fence-hint">
+              当前按「{sortLabel(shown?.view.sort)}」排序，切换为手动排序后可拖动
             </div>
           )}
         </div>
       )}
 
-      {/* 右键菜单 */}
+      {/* 条目右键菜单 */}
       {menu && (
         <div
           className="fence-menu"
@@ -287,8 +458,54 @@ export function FenceOverlay({ fenceId }: Props) {
           </button>
         </div>
       )}
+
+      {/* 栅栏右键菜单 */}
+      {fenceMenu && (
+        <div
+          className="fence-menu"
+          style={{ left: fenceMenu.x, top: fenceMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button type="button" className="fence-menu-item" onClick={startRename}>
+            重命名
+          </button>
+          <button type="button" className="fence-menu-item" onClick={() => void cycleView()}>
+            切换视图（{VIEW_LABEL[shown?.view.layout ?? "grid"]}）
+          </button>
+          <button type="button" className="fence-menu-item" onClick={() => void toggleRoll()}>
+            {fence.rolledUp ? "展开" : "卷起"}
+          </button>
+          {fence.kind !== "inbox" && (
+            <>
+              <div className="fence-menu-sep" />
+              <button
+                type="button"
+                className="fence-menu-item fence-menu-danger"
+                onClick={() => void handleDelete()}
+              >
+                删除栅栏
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
+}
+
+function sortLabel(sort: string | undefined): string {
+  switch (sort) {
+    case "name":
+      return "名称";
+    case "date":
+      return "日期";
+    case "size":
+      return "大小";
+    case "manual":
+      return "手动";
+    default:
+      return sort ?? "默认";
+  }
 }
 
 function formatSize(bytes: number): string {
