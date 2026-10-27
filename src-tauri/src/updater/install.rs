@@ -565,7 +565,7 @@ fn stage_windows_helper_copy(paths: &UpdatePaths, source_path: &Path) -> Result<
         .extension()
         .and_then(|ext| ext.to_str())
         .unwrap_or("exe");
-    let staged_exe = staged_dir.join(format!("floral-update-helper.{source_ext}"));
+    let staged_exe = staged_dir.join(format!("renown-update-helper.{source_ext}"));
     copy_helper_file(source_path, &staged_exe)?;
 
     if let Some(source_dir) = source_path.parent() {
@@ -1236,7 +1236,7 @@ mod tests {
         let staged_dir = staged.parent().expect("staged helper parent");
         assert_eq!(
             staged.file_name().and_then(|n| n.to_str()),
-            Some("floral-update-helper.exe")
+            Some("renown-update-helper.exe")
         );
         assert_eq!(fs::read(&staged).expect("read staged exe"), b"helper exe");
         assert_eq!(

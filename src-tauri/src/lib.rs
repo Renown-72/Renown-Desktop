@@ -271,7 +271,7 @@ fn config_save(app: AppHandle, config: AppConfig) -> Result<AppConfig, AppError>
 #[tauri::command]
 fn config_migrate_data_dir(app: AppHandle, new_data_dir: String) -> Result<AppConfig, AppError> {
     let store = default_store()?;
-    let new_path = PathBuf::from(&new_data_dir).join("floral");
+    let new_path = PathBuf::from(&new_data_dir).join("Renown");
     let new_store = store.migrate_data_to(&new_path)?;
 
     let scope = app.asset_protocol_scope();
@@ -394,18 +394,14 @@ fn flush_attached_console_stdout() {
 }
 
 fn print_cli_version() {
-    let _ = writeln!(
-        std::io::stdout(),
-        "floral-notepaper {}",
-        env!("CARGO_PKG_VERSION")
-    );
+    let _ = writeln!(std::io::stdout(), "renown {}", env!("CARGO_PKG_VERSION"));
     flush_attached_console_stdout();
 }
 
 fn print_cli_help() {
     let _ = writeln!(
         std::io::stdout(),
-        "floral-notepaper {}\nFloral Notepaper - lightweight local note app\n\nUSAGE:\n    floral-notepaper [OPTIONS]\n\nOPTIONS:\n    -V, --version\n            Print version\n    -h, --help\n            Print help",
+        "renown {}\nRenown - 桌面整理与便签工具\n\nUSAGE:\n    renown [OPTIONS]\n\nOPTIONS:\n    -V, --version\n            Print version\n    -h, --help\n            Print help",
         env!("CARGO_PKG_VERSION"),
     );
     flush_attached_console_stdout();

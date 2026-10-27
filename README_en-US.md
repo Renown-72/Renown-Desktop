@@ -4,23 +4,21 @@
 
 <div align="center">
 
-<img src="./src-tauri/icons/icon.png" width="120" alt="Floral Notepaper Icon">
+<img src="./src-tauri/icons/icon.png" width="120" alt="Renown Icon">
 
-# Floral Notepaper
+# Renown
 
-A lightweight, elegant, and modern sticky note app for your desktop<br>
-Built with Tauri 2 + React
+A desktop organizer + sticky note app for Windows<br>
+Built with Tauri 2 + Rust + React 19
 
-[Report an Issue](https://github.com/Achilng/floral-notepaper/issues) · [Changelog](https://github.com/Achilng/floral-notepaper/releases) <br>
-[Quick Start](#quick-start) · [FAQ](https://github.com/Achilng/floral-notepaper/wiki) · [Building from Source](#building-from-source)
+[Report an Issue](https://github.com/Renown-72/Renown-Desktop/issues) · [Changelog](https://github.com/Renown-72/Renown-Desktop/releases) <br>
+[Quick Start](#quick-start) · [Building from Source](#building-from-source)
 
-[![Version](https://img.shields.io/github/v/release/Achilng/floral-notepaper)](https://github.com/Achilng/floral-notepaper/releases/latest)
+[![Version](https://img.shields.io/github/v/release/Renown-72/Renown-Desktop)](https://github.com/Renown-72/Renown-Desktop/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Stars](https://img.shields.io/github/stars/Achilng/floral-notepaper?color=ffcb47&labelColor=black)</br>
 ![React 19](https://img.shields.io/badge/React-19-blue?logo=react)
 ![Tauri v2](https://img.shields.io/badge/Tauri-v2-%2324C8D8?logo=tauri)
-![Rust Edition 2021](https://img.shields.io/badge/Rust-2021-%23000000?logo=rust)<br>
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Achilng/floral-notepaper)
+![Rust Edition 2021](https://img.shields.io/badge/Rust-2021-%23000000?logo=rust)
 
 </div>
 
@@ -28,108 +26,102 @@ Built with Tauri 2 + React
 
 ---
 
-## Why Floral Notepaper
+## What is Renown
 
-Most note-taking or sticky note apps out there are either bloated and steep to learn, or dated and long abandoned. Floral Notepaper was built to be different — quick to summon, light to use, and a pleasure to look at.
+Renown combines two things people usually need separate tools for: **keeping the
+desktop tidy** and **taking quick notes**.
+
+- **Sticky notes** — forked from [floral-notepaper](https://github.com/Achilng/floral-notepaper) (MIT).
+  Markdown editing and preview, multiple windows, tray residency, three UI languages.
+- **Desktop fences** — ported from [PecoFence](https://github.com/DayuanJiang/PecoFence) (Apache-2.0).
+  Glass panels on the desktop, a rule engine that files items automatically, tabs,
+  multi-monitor layouts, layout snapshots.
 
 ## Features
 
-- **Markdown Editing & Preview** — Full GitHub Flavored Markdown support with seamless toggling between edit and preview modes
+### Sticky notes
 
-  ![Main window screenshot](Docs/images/主窗口截图.png)
+- **Markdown editing & preview** — GitHub Flavored Markdown with seamless toggling
+- **Multiple windows** — pin notes to the desktop, keep them always on top
+- **Tray residency** — global hotkey to summon, quick capture
+- **Three languages** — Simplified Chinese, Traditional Chinese, English
 
-- **Quick Note** — Summon a note window instantly from the system tray or via a global hotkey (default: `Ctrl+Space`)
+### Desktop fences
 
-  ![Multi-window example](Docs/images/小窗多开示例.gif)
-
-- **Pin Mode** — Pin a note to a fixed spot on your desktop for quick reference and easy copying
-
-  ![Pin mode example](Docs/images/AI绘画截图.png)
-
-- **Import & Export** — Import and export notes as `.md` files
-
-## Use Cases
-
-- Use it as an always-visible clipboard to stash and copy text on the fly
-- Jot things down while gaming or watching videos
-- Capture a quick thought or burst of inspiration
-- Keep a to-do list right on your desktop
+- **Fence panels** — group desktop items into glass panels that sit above the
+  wallpaper and below normal windows
+- **Rule engine** — file items automatically by type, extension, name, glob,
+  shortcut target, size, creation time, or idle days
+- **Templates** — one click to create fences for programs, documents, images,
+  music, video, archives, installers, downloads, cleanup
+- **Tabs** — merge several fences into one window as tabs
+- **Multi-monitor** — geometry stored relative to each monitor's work area, with
+  a monitor fingerprint so layouts survive resolution and DPI changes
+- **Layout snapshots** — save and restore the whole arrangement
+- **Real shell icons** — extracted through `IShellItemImageFactory` and cached on disk
+- **Optional icon hiding** — hide the native desktop icons so only fences show;
+  restored automatically on exit
 
 ## Quick Start
 
-### Download
+```powershell
+cd app
+npm install
+npm run tauri dev
+```
 
-#### Via MirrorChyan
+Open **Settings → Desktop Organizer** to create your first fence.
 
-> [!TIP]
-> If you have trouble accessing GitHub or experience slow downloads, try downloading Floral Notepaper via MirrorChyan.<br>
-> Downloading via MirrorChyan also helps support the developer — see the [MirrorChyan website](https://mirrorchyan.com/) for details.
+## Building from Source
 
-| Platform | Arch                    | Download                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| -------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Windows  | x64                     | [![Windows x64 Setup](https://img.shields.io/badge/Setup-x64-blue?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgyNDJ2MjQySDB6TTI3MCAwaDI0MnYyNDJIMjcwek0wIDI3MGgyNDJ2MjQySDB6TTI3MCAyNzBoMjQydjI0MkgyNzB6Ii8%2BPC9zdmc%2B)](https://mirrorchyan.com/zh/projects?rid=floral&os=windows&arch=x64&channel=stable)           |
-| Windows  | AArch64                 | [![Windows AArch64 Setup](https://img.shields.io/badge/Setup-AArch64-blue?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgyNDJ2MjQySDB6TTI3MCAwaDI0MnYyNDJIMjcwek0wIDI3MGgyNDJ2MjQySDB6TTI3MCAyNzBoMjQydjI0MkgyNzB6Ii8%2BPC9zdmc%2B)](https://mirrorchyan.com/zh/projects?rid=floral&os=windows&arch=arm64&channel=stable) |
-| macOS    | AArch64 (Apple Silicon) | [![macOS Apple Silicon](https://img.shields.io/badge/DMG-Apple%20Silicon-%23000000.svg?logo=apple)](https://mirrorchyan.com/zh/projects?rid=floral&os=macos&channel=stable&arch=arm64)                                                                                                                                                                                                                                                                                       |
-| macOS    | x64 (Intel)             | [![macOS Intel](https://img.shields.io/badge/DMG-Intel%20X64-%2300A9E0.svg?logo=apple)](https://mirrorchyan.com/zh/projects?rid=floral&os=macos&channel=stable&arch=x64)                                                                                                                                                                                                                                                                                                     |
+Requirements:
 
-#### Via GitHub
+- Windows 10 2004+ / Windows 11
+- Rust stable (MSVC toolchain) with Visual Studio Build Tools (C++ desktop + Windows SDK)
+- Node.js 20+
+- WebView2 Runtime
 
-Head over to the [Releases page](https://github.com/Achilng/floral-notepaper/releases/latest) to download.
+```powershell
+cd app
+npm install
+npm run tauri build              # NSIS installer
+npx tauri build --no-bundle      # exe only
+```
 
-##### Download Reference
+Output: `app/src-tauri/target/release/`
 
-| Platform | Arch                    | Type                    | Filename                                 |
-| -------- | ----------------------- | ----------------------- | ---------------------------------------- |
-| Windows  | x64                     | Installer (Recommended) | floral-notepaper_x.y.z_x64-setup.exe     |
-| Windows  | x64                     | Portable                | floral-notepaper_x.y.z.exe               |
-| Windows  | x64                     | MSIX Package            | floral-notepaper_x.y.z_x64.msix          |
-| Windows  | AArch64                 | Installer (Recommended) | floral-notepaper_x.y.z_aarch64-setup.exe |
-| Windows  | AArch64                 | MSIX Package            | floral-notepaper_x.y.z_aarch64.msix      |
-| macOS    | AArch64 (Apple Silicon) | DMG                     | floral-notepaper_x.y.z_aarch64.dmg       |
-| macOS    | x64 (Intel)             | DMG                     | floral-notepaper_x.y.z_x64.dmg           |
+## Testing
 
-#### Via Microsoft Store
+```powershell
+cd app
+npm test                                              # frontend unit tests
+cargo test --manifest-path src-tauri/Cargo.toml       # backend tests
+npx tsc --noEmit                                      # type check
+```
 
-Download Floral Notepaper from the [Microsoft Store](https://apps.microsoft.com/detail/9NRCC0ZSG81R)
+## How the fences work
 
-> Note: MSIX installs (from the Microsoft Store or sideloaded .msix files) do not support in-app updates. Get the latest version from the Microsoft Store or GitHub Releases.
+PecoFence does not manipulate `SysListView32` icon items. Instead it enumerates
+the real desktop folders, hides the native icon layer, and draws its own panels.
+That makes the backend logic portable, so Renown reuses it and replaces only the
+Direct2D renderer with React components running in Tauri/WebView2.
 
-<!-- markdownlint-disable -->
+Each fence is its own `WebviewWindow`, positioned from a `NormGeometry`
+(DIP coordinates relative to the monitor work area) and inserted into the Win32
+z-order directly above the desktop host and below normal windows.
 
-<a href="https://apps.microsoft.com/detail/9NRCC0ZSG81R?referrer=appbadge&mode=full" target="_blank"  rel="noopener noreferrer">
-	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
-</a>
+See [app/README.md](app/README.md) for the module map and design decisions.
 
-<!-- markdownlint-restore -->
+## Upstream attribution
 
-#### macOS Installation Guidance
+- Sticky notes are based on [floral-notepaper](https://github.com/Achilng/floral-notepaper)
+  (MIT License). Original copyright belongs to Achilng and that project's contributors.
+- The desktop fence subsystem is ported from [PecoFence](https://github.com/DayuanJiang/PecoFence)
+  (Apache License 2.0). Original copyright belongs to PecoFence contributors.
 
-If you encounter installation issues, please refer to:
-
-- Wiki: [macOS Installation Guidance](https://github.com/Achilng/floral-notepaper/wiki/macOS-%E5%AE%89%E8%A3%85%E6%8C%87%E5%BC%95-%7C-macOS-Installation-Guidance)
-- Or video (Bilibili): [Mac云课堂 - Installing software on Mac means learning to wrestle with Apple](https://www.bilibili.com/video/BV1tg411t7hN)
-
-### Building from Source
-
-Please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Star History
-
-[![Star History Chart](https://star-history.dera.page/svg?repos=Achilng/floral-notepaper&type=Date&legend=top-left)](https://star-history.dera.page/#Achilng/floral-notepaper&Date)
-
-## 🌟 Contributors
-
-[![contrib.rocks](https://contrib.rocks/image?repo=Achilng/floral-notepaper&max=1000)](https://contrib.rocks/image?repo=Achilng/floral-notepaper&max=1000)
-
-## Sponsors
-
-<!-- markdownlint-disable -->
-
-| <img src="https://signpath.org/assets/favicon.png" alt="SignPath Logo" width=50> | Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org/) |
-| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-
-<!-- markdownlint-restore -->
+License and copyright notices are retained as required by MIT and Apache-2.0.
+See [NOTICE](NOTICE) for the full attribution and a list of changes.
 
 ## License
 
-[MIT](LICENSE)
+MIT

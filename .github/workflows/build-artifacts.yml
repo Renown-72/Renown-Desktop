@@ -142,7 +142,7 @@ jobs:
         id: restore-nsis-downloads
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: tauri-nsis-downloads-${{ runner.os }}-3.11-0.5.3-v1
 
       - name: Preload Tauri NSIS toolchain
@@ -154,7 +154,7 @@ jobs:
         if: ${{ steps.restore-nsis-downloads.outputs.cache-hit != 'true' && inputs.source_type == 'branch' && inputs.source_ref == 'main' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: ${{ steps.restore-nsis-downloads.outputs.cache-primary-key }}
 
       - name: Build
@@ -172,15 +172,15 @@ jobs:
             throw 'No Windows NSIS installer found.'
           }
 
-          $setupAsset = Join-Path $releaseDir "floral-notepaper_${ver}_x64-setup.exe"
-          $portableAsset = Join-Path $releaseDir "floral-notepaper_${ver}.exe"
+          $setupAsset = Join-Path $releaseDir "renown_${ver}_x64-setup.exe"
+          $portableAsset = Join-Path $releaseDir "renown_${ver}.exe"
           Copy-Item $setupSource.FullName $setupAsset -Force
-          Copy-Item 'src-tauri/target/release/floral-notepaper.exe' $portableAsset -Force
+          Copy-Item 'src-tauri/target/release/renown.exe' $portableAsset -Force
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: floral-notepaper-windows-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
+          name: renown-windows-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
           path: release-assets/*
           if-no-files-found: error
           retention-days: 14
@@ -242,17 +242,17 @@ jobs:
 
           deb_source="$(find src-tauri/target/release/bundle/deb -type f -name '*.deb' | sort | head -n 1)"
           if [ -n "$deb_source" ]; then
-            cp "$deb_source" "release-assets/floral-notepaper_${ver}_amd64.deb"
+            cp "$deb_source" "release-assets/renown_${ver}_amd64.deb"
           fi
 
           rpm_source="$(find src-tauri/target/release/bundle/rpm -type f -name '*.rpm' | sort | head -n 1)"
           if [ -n "$rpm_source" ]; then
-            cp "$rpm_source" "release-assets/floral-notepaper-${ver}-1.x86_64.rpm"
+            cp "$rpm_source" "release-assets/renown-${ver}-1.x86_64.rpm"
           fi
 
           appimage_source="$(find src-tauri/target/release/bundle/appimage -type f -name '*.AppImage' | sort | head -n 1)"
           if [ -n "$appimage_source" ]; then
-            cp "$appimage_source" "release-assets/floral-notepaper_${ver}_amd64.AppImage"
+            cp "$appimage_source" "release-assets/renown_${ver}_amd64.AppImage"
           fi
 
           shopt -s nullglob
@@ -265,7 +265,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: floral-notepaper-linux-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
+          name: renown-linux-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
           path: release-assets/*
           if-no-files-found: error
           retention-days: 14
@@ -321,14 +321,14 @@ jobs:
             echo "No macOS x86_64 DMG build artifact found." >&2
             exit 1
           fi
-          dmg_asset="release-assets/floral-notepaper_${ver}_x64.dmg"
+          dmg_asset="release-assets/renown_${ver}_x64.dmg"
           cp "$dmg_source" "$dmg_asset"
           xattr -cr "$dmg_asset"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: floral-notepaper-macos-x64-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
+          name: renown-macos-x64-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
           path: release-assets/*
           if-no-files-found: error
           retention-days: 14
@@ -384,14 +384,14 @@ jobs:
             echo "No macOS aarch64 DMG build artifact found." >&2
             exit 1
           fi
-          dmg_asset="release-assets/floral-notepaper_${ver}_aarch64.dmg"
+          dmg_asset="release-assets/renown_${ver}_aarch64.dmg"
           cp "$dmg_source" "$dmg_asset"
           xattr -cr "$dmg_asset"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: floral-notepaper-macos-aarch64-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
+          name: renown-macos-aarch64-${{ needs.prepare-build.outputs.source_label }}-${{ needs.prepare-build.outputs.version_label }}
           path: release-assets/*
           if-no-files-found: error
           retention-days: 14

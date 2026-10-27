@@ -19,7 +19,7 @@
   up at the root of the upload container.
 
 .PARAMETER OutputDir
-  Directory where floral-notepaper_<version>.msixupload is written.
+  Directory where renown_<version>.msixupload is written.
 
 .PARAMETER AllowUnsignedPackages
   Allows unsigned MSIX inputs for local build verification. Release workflows
@@ -29,7 +29,7 @@
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File scripts/build-msixupload.ps1 `
     -Version 1.1.0 `
-    -MsixPaths signed-x64/floral-notepaper_1.1.0_x64.msix, signed-arm64/floral-notepaper_1.1.0_aarch64.msix `
+    -MsixPaths signed-x64/renown_1.1.0_x64.msix, signed-arm64/renown_1.1.0_aarch64.msix `
     -OutputDir upload-out
 #>
 [CmdletBinding()]
@@ -87,7 +87,7 @@ foreach ($path in $MsixPaths) {
 
 # --- Stage and compress -----------------------------------------------------
 
-$stagingDir = Join-Path (Join-Path $env:TEMP 'floral-msixupload-stage') ([guid]::NewGuid().ToString('N'))
+$stagingDir = Join-Path (Join-Path $env:TEMP 'renown-msixupload-stage') ([guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $stagingDir -Force | Out-Null
 try {
   foreach ($file in $sourceFiles) {
@@ -95,7 +95,7 @@ try {
   }
 
   New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
-  $uploadPath = Join-Path $OutputDir "floral-notepaper_${Version}.msixupload"
+  $uploadPath = Join-Path $OutputDir "renown_${Version}.msixupload"
   if (Test-Path -LiteralPath $uploadPath) {
     Remove-Item -LiteralPath $uploadPath -Force
   }

@@ -1296,12 +1296,12 @@ export function MainWindow({
     try {
       const dir = await chooseDataDirectory();
       if (!dir) return;
-      // 后端会在所选目录下创建 floral 子目录存放数据；先告知用户，
+      // 后端会在所选目录下创建 Renown 子目录存放数据；先告知用户，
       // 避免其在文件管理器打开所选目录看到"空文件夹"而误判数据丢失
       const confirmed = window.confirm(
         t("settings.dataDir.confirmSubdir", {
           dir,
-          defaultValue: "数据将存放在「{{dir}}」下的 floral 子文件夹中，是否继续？",
+          defaultValue: "数据将存放在「{{dir}}」下的 Renown 子文件夹中，是否继续？",
         }),
       );
       if (!confirmed) return;
@@ -1983,7 +1983,7 @@ export function MainWindow({
         >
           <div className="flex items-center gap-3 min-w-0">
             <span className="text-[15px] font-serif font-medium text-ink-soft tracking-wide leading-none">
-              花笺
+              Renown
             </span>
             <span className="text-[11px] text-ink-ghost font-body leading-none translate-y-px">
               —

@@ -45,4 +45,4 @@
 - [ ] `cargo test`
 - [ ] `npm test`
 
-<!-- 感谢你对花笺 Floral Notepaper 的贡献！Thank you for your contribution! -->
+<!-- 感谢你对Renown 的贡献！Thank you for your contribution! -->

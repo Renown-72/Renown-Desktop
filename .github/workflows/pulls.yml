@@ -129,7 +129,7 @@ jobs:
             return new Promise((resolve, reject) => {
               const headers = {
                 "Accept": "application/vnd.github+json",
-                "User-Agent": "floral-notepaper-pr-checks",
+                "User-Agent": "renown-pr-checks",
                 "X-GitHub-Api-Version": "2022-11-28",
               };
 
@@ -493,20 +493,20 @@ jobs:
           }
 
           $setupSource = $setupCandidates[0]
-          $portableSource = 'src-tauri/target/release/floral-notepaper.exe'
+          $portableSource = 'src-tauri/target/release/renown.exe'
           if (-not (Test-Path $portableSource)) {
             throw "No Windows portable executable found at $portableSource."
           }
 
-          Copy-Item $setupSource.FullName "$artifactDir/floral-notepaper_windows_x64-setup.exe" -Force
-          Copy-Item $portableSource "$artifactDir/floral-notepaper_windows_portable.exe" -Force
+          Copy-Item $setupSource.FullName "$artifactDir/renown_windows_x64-setup.exe" -Force
+          Copy-Item $portableSource "$artifactDir/renown_windows_portable.exe" -Force
 
       - name: Upload Windows setup artifact
         if: ${{ github.event_name != 'issue_comment' || needs.detect-changes.outputs.build == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: floral-notepaper_windows_x64-setup.exe
-          path: release-assets/floral-notepaper_windows_x64-setup.exe
+          name: renown_windows_x64-setup.exe
+          path: release-assets/renown_windows_x64-setup.exe
           if-no-files-found: error
           archive: false
 
@@ -514,8 +514,8 @@ jobs:
         if: ${{ github.event_name != 'issue_comment' || needs.detect-changes.outputs.build == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: floral-notepaper_windows_portable.exe
-          path: release-assets/floral-notepaper_windows_portable.exe
+          name: renown_windows_portable.exe
+          path: release-assets/renown_windows_portable.exe
           if-no-files-found: error
           archive: false
 
@@ -619,13 +619,13 @@ jobs:
             exit 1
           fi
 
-          cp "$dmg_source" release-assets/floral-notepaper_macos_aarch64.dmg
+          cp "$dmg_source" release-assets/renown_macos_aarch64.dmg
 
       - name: Upload macOS DMG artifact
         if: ${{ github.event_name != 'issue_comment' || needs.detect-changes.outputs.build == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: floral-notepaper_macos_aarch64.dmg
-          path: release-assets/floral-notepaper_macos_aarch64.dmg
+          name: renown_macos_aarch64.dmg
+          path: release-assets/renown_macos_aarch64.dmg
           if-no-files-found: error
           archive: false

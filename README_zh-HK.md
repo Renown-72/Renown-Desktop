@@ -4,23 +4,21 @@
 
 <div align="center">
 
-<img src="./src-tauri/icons/icon.png" width="120" alt="花箋圖示">
+<img src="./src-tauri/icons/icon.png" width="120" alt="Renown 圖示">
 
-# 花箋 Floral Notepaper
+# Renown
 
-輕巧、優雅、現代化的本機便箋工具<br>
-基於 Tauri 2 + React 構建
+桌面整理 + 桌面便箋二合一工具（Windows）<br>
+以 Tauri 2 + Rust + React 19 打造
 
-[回報問題](https://github.com/Achilng/floral-notepaper/issues) · [更新日誌](https://github.com/Achilng/floral-notepaper/releases) <br>
-[快速開始](#快速開始) · [FAQ](https://github.com/Achilng/floral-notepaper/wiki) · [構建指南](#從原始碼構建)
+[回報問題](https://github.com/Renown-72/Renown-Desktop/issues) · [更新日誌](https://github.com/Renown-72/Renown-Desktop/releases) <br>
+[快速開始](#快速開始) · [從原始碼建置](#從原始碼建置)
 
-[![Version](https://img.shields.io/github/v/release/Achilng/floral-notepaper)](https://github.com/Achilng/floral-notepaper/releases/latest)
+[![Version](https://img.shields.io/github/v/release/Renown-72/Renown-Desktop)](https://github.com/Renown-72/Renown-Desktop/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Stars](https://img.shields.io/github/stars/Achilng/floral-notepaper?color=ffcb47&labelColor=black)</br>
 ![React 19](https://img.shields.io/badge/React-19-blue?logo=react)
 ![Tauri v2](https://img.shields.io/badge/Tauri-v2-%2324C8D8?logo=tauri)
-![Rust Edition 2021](https://img.shields.io/badge/Rust-2021-%23000000?logo=rust)<br>
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Achilng/floral-notepaper)
+![Rust Edition 2021](https://img.shields.io/badge/Rust-2021-%23000000?logo=rust)
 
 </div>
 
@@ -28,108 +26,92 @@
 
 ---
 
-## 為什麼選擇花箋
+## Renown 是什麼
 
-市面上現有的筆記或便箋軟件，要麼功能繁重、上手門檻高，要麼介面陳舊、久未更新。花箋因此而生，其特點是輕巧、隨呼隨用，同時提供現代化的介面與舒適的編輯體驗。
+Renown 把兩件通常需要兩套工具才能完成的事合在一起：**整理桌面** 與 **隨手記便箋**。
 
-## 功能特點
+- **桌面便箋** —— 基於 [floral-notepaper](https://github.com/Achilng/floral-notepaper)（MIT）分叉。
+  Markdown 編輯與預覽、多視窗、常駐系統匣、三語介面。
+- **桌面整理（柵欄）** —— 移植自 [PecoFence](https://github.com/DayuanJiang/PecoFence)（Apache-2.0）。
+  桌面玻璃面板、自動歸類的規則引擎、標籤頁、多螢幕佈局、佈局快照。
 
-- **Markdown 編輯與預覽** — 支援 GitHub Flavored Markdown 語法，可即時切換編輯及預覽模式
+## 功能
 
-  ![主視窗截圖](Docs/images/主窗口截图.png)
+### 桌面便箋
 
-- **快速便箋** — 透過系統匣或全域快速鍵（預設 `Ctrl+Space`）隨時喚出便箋視窗
+- **Markdown 編輯與預覽** —— 完整 GitHub Flavored Markdown，編輯/預覽無縫切換
+- **多視窗** —— 便箋可釘在桌面、可置頂
+- **常駐系統匣** —— 全域快速鍵喚出、快速記錄
+- **三種語言** —— 簡體中文、繁體中文、English
 
-  ![小視窗多開示例](Docs/images/小窗多开示例.gif)
+### 桌面整理（柵欄）
 
-- **磁貼模式** — 將筆記固定於桌面某處，以便快速查閱及複製
-
-  ![磁貼示例](Docs/images/AI绘画截图.png)
-
-- **匯入匯出** — 支援 `.md` 檔案的匯入及匯出
-
-## 應用場景
-
-- 用作隨時可見的剪貼簿，快速暫存及複製文字
-- 遊戲、觀看影片時隨手記錄
-- 臨時記錄思路或靈感
-- 桌面待辦清單
+- **柵欄面板** —— 把桌面項目分組放進玻璃面板，位於桌布之上、一般視窗之下
+- **規則引擎** —— 依類型、副檔名、名稱、glob、捷徑目標、大小、建立時間、閒置天數自動歸類
+- **快速範本** —— 一鍵建立程式、文件、圖片、音樂、影片、壓縮檔、安裝檔、下載、待清理等柵欄
+- **標籤頁** —— 把多個柵欄合併成同一視窗的分頁
+- **多螢幕** —— 幾何座標相對於各螢幕工作區儲存，並以螢幕指紋匹配，解析度與 DPI 變更後仍能還原
+- **佈局快照** —— 儲存與還原整套排列
+- **真實系統圖示** —— 透過 `IShellItemImageFactory` 擷取並快取到磁碟
+- **可選隱藏原生圖示** —— 隱藏桌面原生圖示只留柵欄；結束程式時自動還原
 
 ## 快速開始
 
-### 下載安裝
+```powershell
+cd app
+npm install
+npm run tauri dev
+```
 
-#### 透過 Mirror 醬下載
+開啟 **設定 → 桌面整理** 即可建立第一個柵欄。
 
-> [!TIP]
-> 如您的網絡不便訪問 GitHub，或下載速度過慢，您可以嘗試透過 Mirror 醬下載花箋<br>
-> 此外，您也可以透過使用 Mirror 醬下載花箋來贊助花箋的開發者，詳見 [Mirror 醬官網](https://mirrorchyan.com/)
+## 從原始碼建置
 
-| 系統    | 架構                    | 下載連結                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| ------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Windows | x64                     | [![Windows x64 Setup](https://img.shields.io/badge/Setup-x64-blue?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgyNDJ2MjQySDB6TTI3MCAwaDI0MnYyNDJIMjcwek0wIDI3MGgyNDJ2MjQySDB6TTI3MCAyNzBoMjQydjI0MkgyNzB6Ii8%2BPC9zdmc%2B)](https://mirrorchyan.com/zh/projects?rid=floral&os=windows&arch=x64&channel=stable)           |
-| Windows | AArch64                 | [![Windows AArch64 Setup](https://img.shields.io/badge/Setup-AArch64-blue?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgyNDJ2MjQySDB6TTI3MCAwaDI0MnYyNDJIMjcwek0wIDI3MGgyNDJ2MjQySDB6TTI3MCAyNzBoMjQydjI0MkgyNzB6Ii8%2BPC9zdmc%2B)](https://mirrorchyan.com/zh/projects?rid=floral&os=windows&arch=arm64&channel=stable) |
-| macOS   | AArch64 (Apple Silicon) | [![macOS Apple Silicon](https://img.shields.io/badge/DMG-Apple%20Silicon-%23000000.svg?logo=apple)](https://mirrorchyan.com/zh/projects?rid=floral&os=macos&channel=stable&arch=arm64)                                                                                                                                                                                                                                                                                       |
-| macOS   | x64 (Intel)             | [![macOS Intel](https://img.shields.io/badge/DMG-Intel%20X64-%2300A9E0.svg?logo=apple)](https://mirrorchyan.com/zh/projects?rid=floral&os=macos&channel=stable&arch=x64)                                                                                                                                                                                                                                                                                                     |
+環境需求：
 
-#### 透過 GitHub 下載
+- Windows 10 2004+ / Windows 11
+- Rust stable（MSVC 工具鏈），並安裝 Visual Studio Build Tools（C++ 桌面開發 + Windows SDK）
+- Node.js 20+
+- WebView2 Runtime
 
-請前往 [Release 頁](https://github.com/Achilng/floral-notepaper/releases/latest) 下載花箋
+```powershell
+cd app
+npm install
+npm run tauri build              # 打包 NSIS 安裝程式
+npx tauri build --no-bundle      # 只產出 exe
+```
 
-##### 下載參考
+產物位置：`app/src-tauri/target/release/`
 
-| 系統    | 架構                    | 類型             | 檔案名稱                                    |
-| ------- | ----------------------- | ---------------- | ------------------------------------------- |
-| Windows | x64                     | 安裝程式（推薦） | floral-notepaper\_版本號\_x64-setup.exe     |
-| Windows | x64                     | 可攜版           | floral-notepaper\_版本號.exe                |
-| Windows | x64                     | 安裝包           | floral-notepaper\_版本號\_x64.msix          |
-| Windows | AArch64                 | 安裝程式（推薦） | floral-notepaper\_版本號\_aarch64-setup.exe |
-| Windows | AArch64                 | 安裝包           | floral-notepaper\_版本號\_aarch64.msix      |
-| macOS   | AArch64 (Apple Silicon) | DMG              | floral-notepaper\_版本號\_aarch64.dmg       |
-| macOS   | x64 (Intel)             | DMG              | floral-notepaper\_版本號\_x64.dmg           |
+## 測試
 
-#### 透過 Microsoft Store 下載
+```powershell
+cd app
+npm test                                              # 前端單元測試
+cargo test --manifest-path src-tauri/Cargo.toml       # 後端測試
+npx tsc --noEmit                                      # 型別檢查
+```
 
-前往 [Microsoft Store](https://apps.microsoft.com/detail/9NRCC0ZSG81R) 下載花箋
+## 柵欄是怎麼運作的
 
-> 注意：MSIX 安裝（無論來自 Microsoft Store 或側載的 .msix 檔案）暫不支援應用程式內更新，請透過 Microsoft Store 或 GitHub Releases 取得最新版本。
+PecoFence 並不操作 `SysListView32` 的圖示項目，而是直接列舉真實的桌面資料夾、
+隱藏原生圖示層、再自己繪製面板。因此後端邏輯可以移植——Renown 沿用這部分，
+只把 Direct2D 渲染層換成執行在 Tauri/WebView2 裡的 React 元件。
 
-<!-- markdownlint-disable -->
+每個柵欄都是一個獨立的 `WebviewWindow`，依 `NormGeometry`（相對於螢幕工作區的
+DIP 座標）定位，並插入 Win32 z 序中「桌面之上、一般視窗之下」的位置。
 
-<a href="https://apps.microsoft.com/detail/9NRCC0ZSG81R?referrer=appbadge&mode=full" target="_blank"  rel="noopener noreferrer">
-	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
-</a>
+模組對照與設計取捨見 [app/README.md](app/README.md)。
 
-<!-- markdownlint-restore -->
+## 上游歸屬
 
-#### macOS 版安裝指引
+- 桌面便箋基於 [floral-notepaper](https://github.com/Achilng/floral-notepaper)（MIT License），
+  原始版權歸 Achilng 及該專案貢獻者所有。
+- 桌面整理子系統移植自 [PecoFence](https://github.com/DayuanJiang/PecoFence)（Apache License 2.0），
+  原始版權歸 PecoFence contributors 所有。
 
-如遇安裝問題，請參考：
+已依 MIT 與 Apache-2.0 要求保留授權與版權聲明，完整歸屬與改動說明見 [NOTICE](NOTICE)。
 
-- Wiki 中的 [macOS 安裝指引](https://github.com/Achilng/floral-notepaper/wiki/macOS-%E5%AE%89%E8%A3%85%E6%8C%87%E5%BC%95-%7C-macOS-Installation-Guidance)
-- 或影片（Bilibili）：[Mac雲課堂 - 在 Mac 上裝軟件，要學會和蘋果鬥智鬥勇](https://www.bilibili.com/video/BV1tg411t7hN)
+## 授權
 
-### 從原始碼構建
-
-請參考 [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## Star History
-
-[![Star History Chart](https://star-history.dera.page/svg?repos=Achilng/floral-notepaper&type=Date&legend=top-left)](https://star-history.dera.page/#Achilng/floral-notepaper&Date)
-
-## 🌟 貢獻者
-
-[![contrib.rocks](https://contrib.rocks/image?repo=Achilng/floral-notepaper&max=1000)](https://contrib.rocks/image?repo=Achilng/floral-notepaper&max=1000)
-
-## Sponsors
-
-<!-- markdownlint-disable -->
-
-| <img src="https://signpath.org/assets/favicon.png" alt="SignPath Logo" width=50> | Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org/) |
-| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-
-<!-- markdownlint-restore -->
-
-## 授權條款
-
-[MIT](LICENSE)
+MIT

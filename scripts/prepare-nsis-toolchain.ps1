@@ -4,7 +4,7 @@
 
 .DESCRIPTION
   Restores NSIS from hash-verified download files under
-  %LOCALAPPDATA%\floral-notepaper-ci-cache\nsis. The download directory is safe
+  %LOCALAPPDATA%\renown-ci-cache\nsis. The download directory is safe
   to cache because every file is verified before it is used.
 #>
 $ErrorActionPreference = 'Stop'
@@ -53,7 +53,7 @@ function Get-VerifiedFileWithRetry {
   }
 }
 
-$downloadCache = Join-Path $env:LOCALAPPDATA 'floral-notepaper-ci-cache\nsis'
+$downloadCache = Join-Path $env:LOCALAPPDATA 'renown-ci-cache\nsis'
 New-Item -ItemType Directory -Path $downloadCache -Force | Out-Null
 
 $zipPath = Join-Path $downloadCache 'nsis-3.11.zip'

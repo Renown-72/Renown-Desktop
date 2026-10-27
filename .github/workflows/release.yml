@@ -205,10 +205,10 @@ jobs:
             executable_targets+=("$target")
           done < <(
             cargo metadata --manifest-path src-tauri/Cargo.toml --format-version 1 --no-deps |
-              jq -r '.packages[] | select(.name == "floral-notepaper") | .targets[] | select(.kind | index("bin")) | .name' |
+              jq -r '.packages[] | select(.name == "renown") | .targets[] | select(.kind | index("bin")) | .name' |
               sort
           )
-          if [[ ${#executable_targets[@]} -ne 1 || "${executable_targets[0]}" != "floral-notepaper" ]]; then
+          if [[ ${#executable_targets[@]} -ne 1 || "${executable_targets[0]}" != "renown" ]]; then
             echo 'The executable target set has changed; update the SignPath configuration before releasing:' >&2
             printf '%s\n' "${executable_targets[@]}" >&2
             exit 1
@@ -387,7 +387,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $binaryPath = 'src-tauri/target/release/floral-notepaper.exe'
+          $binaryPath = 'src-tauri/target/release/renown.exe'
           if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
             throw "Windows executable was not found at $binaryPath."
           }
@@ -438,8 +438,8 @@ jobs:
           New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
           $binaries = @(
             @{
-              Source = 'src-tauri/target/release/floral-notepaper.exe'
-              Destination = Join-Path $releaseDir "floral-notepaper_$($env:RELEASE_VERSION).exe"
+              Source = 'src-tauri/target/release/renown.exe'
+              Destination = Join-Path $releaseDir "renown_$($env:RELEASE_VERSION).exe"
             }
           )
 
@@ -532,7 +532,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $mainBinary = "signed-windows-binary/floral-notepaper_$($env:RELEASE_VERSION).exe"
+          $mainBinary = "signed-windows-binary/renown_$($env:RELEASE_VERSION).exe"
           & 'scripts/verify-authenticode.ps1' -Path $mainBinary -RequireTimestamp -SigntoolVerify
 
           $binaryContent = [System.Text.Encoding]::Latin1.GetString(
@@ -562,7 +562,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: signed-windows-portable
-          path: signed-windows-binary/floral-notepaper_${{ needs.validate-release.outputs.version }}.exe
+          path: signed-windows-binary/renown_${{ needs.validate-release.outputs.version }}.exe
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -624,8 +624,8 @@ jobs:
           New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
           $binaries = @(
             @{
-              Source = "signed-windows-binaries/floral-notepaper_$($env:RELEASE_VERSION).exe"
-              Target = Join-Path $targetDir 'floral-notepaper.exe'
+              Source = "signed-windows-binaries/renown_$($env:RELEASE_VERSION).exe"
+              Target = Join-Path $targetDir 'renown.exe'
               Output = 'main_sha256'
             }
           )
@@ -646,7 +646,7 @@ jobs:
         id: restore-nsis-downloads
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: tauri-nsis-downloads-${{ runner.os }}-3.11-0.5.3-v1
 
       - name: Preload Tauri NSIS toolchain
@@ -658,7 +658,7 @@ jobs:
         if: steps.restore-nsis-downloads.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: ${{ steps.restore-nsis-downloads.outputs.cache-primary-key }}
 
       - name: Bundle NSIS installer without recompiling
@@ -674,7 +674,7 @@ jobs:
 
           $binaries = @(
             @{
-              Path = 'src-tauri/target/release/floral-notepaper.exe'
+              Path = 'src-tauri/target/release/renown.exe'
               ExpectedSha256 = $env:EXPECTED_MAIN_SHA256
             }
           )
@@ -695,7 +695,7 @@ jobs:
 
           $releaseDir = 'unsigned-release-assets'
           New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
-          $asset = Join-Path $releaseDir "floral-notepaper_$($env:RELEASE_VERSION)_x64-setup.exe"
+          $asset = Join-Path $releaseDir "renown_$($env:RELEASE_VERSION)_x64-setup.exe"
           Copy-Item -LiteralPath $installers[0].FullName -Destination $asset -Force
 
           & 'scripts/assert-pe-version.ps1' `
@@ -707,7 +707,7 @@ jobs:
         id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          path: unsigned-release-assets/floral-notepaper_${{ needs.validate-release.outputs.version }}_x64-setup.exe
+          path: unsigned-release-assets/renown_${{ needs.validate-release.outputs.version }}_x64-setup.exe
           archive: false
           if-no-files-found: error
           overwrite: true
@@ -814,7 +814,7 @@ jobs:
               }
               Get-ChildItem -LiteralPath $root -ErrorAction SilentlyContinue |
                 ForEach-Object { Get-ItemProperty -LiteralPath $_.PSPath -ErrorAction SilentlyContinue } |
-                Where-Object { $_.DisplayName -eq '花笺' }
+                Where-Object { $_.DisplayName -eq 'Renown' }
             }
             $entries = @($entries)
             if ($entries.Count -ne 1) {
@@ -857,7 +857,7 @@ jobs:
 
             $installEntry = Get-InstallEntry -Mode $Mode -RegistryRoots $RegistryRoots
             $installDir = $installEntry.InstallLocation.Trim('"')
-            $installedBinary = Join-Path $installDir 'floral-notepaper.exe'
+            $installedBinary = Join-Path $installDir 'renown.exe'
             $uninstaller = Join-Path $installDir 'uninstall.exe'
             & 'scripts/verify-authenticode.ps1' -Path $installedBinary -RequireTimestamp -SigntoolVerify
 
@@ -913,8 +913,8 @@ jobs:
             Assert-PathRemoved -Description "$Mode uninstall registry entry" -Path $uninstallRegistryPath
           }
 
-          $installer = "signed-windows-installer/floral-notepaper_$($env:RELEASE_VERSION)_x64-setup.exe"
-          $portable = "signed-windows-binaries/floral-notepaper_$($env:RELEASE_VERSION).exe"
+          $installer = "signed-windows-installer/renown_$($env:RELEASE_VERSION)_x64-setup.exe"
+          $portable = "signed-windows-binaries/renown_$($env:RELEASE_VERSION).exe"
           & 'scripts/verify-authenticode.ps1' -Path $installer -RequireTimestamp -SigntoolVerify
           & 'scripts/verify-authenticode.ps1' -Path $portable -RequireTimestamp -SigntoolVerify
           $expectedBinarySha256 = (Get-FileHash -LiteralPath $portable -Algorithm SHA256).Hash
@@ -952,7 +952,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: signed-windows-installer
-          path: signed-windows-installer/floral-notepaper_${{ needs.validate-release.outputs.version }}_x64-setup.exe
+          path: signed-windows-installer/renown_${{ needs.validate-release.outputs.version }}_x64-setup.exe
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -1011,7 +1011,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $binaryPath = 'src-tauri/target/aarch64-pc-windows-msvc/release/floral-notepaper.exe'
+          $binaryPath = 'src-tauri/target/aarch64-pc-windows-msvc/release/renown.exe'
           if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
             throw "AArch64 Windows executable was not found at $binaryPath."
           }
@@ -1058,14 +1058,14 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $binaryPath = 'src-tauri/target/aarch64-pc-windows-msvc/release/floral-notepaper.exe'
+          $binaryPath = 'src-tauri/target/aarch64-pc-windows-msvc/release/renown.exe'
           if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
             throw "AArch64 Windows executable was not found at $binaryPath."
           }
 
           $releaseDir = 'unsigned-release-assets'
           New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
-          $asset = Join-Path $releaseDir "floral-notepaper_$($env:RELEASE_VERSION)_aarch64.exe"
+          $asset = Join-Path $releaseDir "renown_$($env:RELEASE_VERSION)_aarch64.exe"
           Copy-Item -LiteralPath $binaryPath -Destination $asset -Force
 
           & 'scripts/assert-pe-version.ps1' `
@@ -1078,7 +1078,7 @@ jobs:
         id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          path: unsigned-release-assets/floral-notepaper_${{ needs.validate-release.outputs.version }}_aarch64.exe
+          path: unsigned-release-assets/renown_${{ needs.validate-release.outputs.version }}_aarch64.exe
           archive: false
           if-no-files-found: error
           overwrite: true
@@ -1145,7 +1145,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $mainBinary = "signed-windows-binary-arm64/floral-notepaper_$($env:RELEASE_VERSION)_aarch64.exe"
+          $mainBinary = "signed-windows-binary-arm64/renown_$($env:RELEASE_VERSION)_aarch64.exe"
           & 'scripts/verify-authenticode.ps1' -Path $mainBinary -RequireTimestamp -SigntoolVerify
 
           $binaryContent = [System.Text.Encoding]::Latin1.GetString(
@@ -1171,7 +1171,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: signed-windows-binaries-arm64
-          path: signed-windows-binary-arm64/floral-notepaper_${{ needs.validate-release.outputs.version }}_aarch64.exe
+          path: signed-windows-binary-arm64/renown_${{ needs.validate-release.outputs.version }}_aarch64.exe
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -1234,8 +1234,8 @@ jobs:
           New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
           $binaries = @(
             @{
-              Source = "signed-windows-binaries-arm64/floral-notepaper_$($env:RELEASE_VERSION)_aarch64.exe"
-              Target = Join-Path $targetDir 'floral-notepaper.exe'
+              Source = "signed-windows-binaries-arm64/renown_$($env:RELEASE_VERSION)_aarch64.exe"
+              Target = Join-Path $targetDir 'renown.exe'
               Output = 'main_sha256'
             }
           )
@@ -1256,7 +1256,7 @@ jobs:
         id: restore-nsis-downloads
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: tauri-nsis-downloads-${{ runner.os }}-3.11-0.5.3-v1
 
       - name: Preload Tauri NSIS toolchain
@@ -1268,7 +1268,7 @@ jobs:
         if: steps.restore-nsis-downloads.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: '~\AppData\Local\floral-notepaper-ci-cache\nsis'
+          path: '~\AppData\Local\renown-ci-cache\nsis'
           key: ${{ steps.restore-nsis-downloads.outputs.cache-primary-key }}
 
       - name: Bundle AArch64 NSIS installer without recompiling
@@ -1284,7 +1284,7 @@ jobs:
 
           $binaries = @(
             @{
-              Path = 'src-tauri/target/aarch64-pc-windows-msvc/release/floral-notepaper.exe'
+              Path = 'src-tauri/target/aarch64-pc-windows-msvc/release/renown.exe'
               ExpectedSha256 = $env:EXPECTED_MAIN_SHA256
             }
           )
@@ -1305,7 +1305,7 @@ jobs:
 
           $releaseDir = 'unsigned-release-assets'
           New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
-          $asset = Join-Path $releaseDir "floral-notepaper_$($env:RELEASE_VERSION)_aarch64-setup.exe"
+          $asset = Join-Path $releaseDir "renown_$($env:RELEASE_VERSION)_aarch64-setup.exe"
           Copy-Item -LiteralPath $installers[0].FullName -Destination $asset -Force
 
           & 'scripts/assert-pe-version.ps1' `
@@ -1317,7 +1317,7 @@ jobs:
         id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          path: unsigned-release-assets/floral-notepaper_${{ needs.validate-release.outputs.version }}_aarch64-setup.exe
+          path: unsigned-release-assets/renown_${{ needs.validate-release.outputs.version }}_aarch64-setup.exe
           archive: false
           if-no-files-found: error
           overwrite: true
@@ -1425,7 +1425,7 @@ jobs:
               }
               Get-ChildItem -LiteralPath $root -ErrorAction SilentlyContinue |
                 ForEach-Object { Get-ItemProperty -LiteralPath $_.PSPath -ErrorAction SilentlyContinue } |
-                Where-Object { $_.DisplayName -eq '花笺' }
+                Where-Object { $_.DisplayName -eq 'Renown' }
             }
             $entries = @($entries)
             if ($entries.Count -ne 1) {
@@ -1468,7 +1468,7 @@ jobs:
 
             $installEntry = Get-InstallEntry -Mode $Mode -RegistryRoots $RegistryRoots
             $installDir = $installEntry.InstallLocation.Trim('"')
-            $installedBinary = Join-Path $installDir 'floral-notepaper.exe'
+            $installedBinary = Join-Path $installDir 'renown.exe'
             $uninstaller = Join-Path $installDir 'uninstall.exe'
             & 'scripts/verify-authenticode.ps1' -Path $installedBinary -RequireTimestamp -SigntoolVerify
 
@@ -1524,8 +1524,8 @@ jobs:
             Assert-PathRemoved -Description "$Mode uninstall registry entry" -Path $uninstallRegistryPath
           }
 
-          $installer = "signed-windows-installer-arm64/floral-notepaper_$($env:RELEASE_VERSION)_aarch64-setup.exe"
-          $portable = "signed-windows-binaries-arm64/floral-notepaper_$($env:RELEASE_VERSION)_aarch64.exe"
+          $installer = "signed-windows-installer-arm64/renown_$($env:RELEASE_VERSION)_aarch64-setup.exe"
+          $portable = "signed-windows-binaries-arm64/renown_$($env:RELEASE_VERSION)_aarch64.exe"
           & 'scripts/verify-authenticode.ps1' -Path $installer -RequireTimestamp -SigntoolVerify
           & 'scripts/verify-authenticode.ps1' -Path $portable -RequireTimestamp -SigntoolVerify
           $expectedBinarySha256 = (Get-FileHash -LiteralPath $portable -Algorithm SHA256).Hash
@@ -1567,7 +1567,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: signed-windows-installer-arm64
-          path: signed-windows-installer-arm64/floral-notepaper_${{ needs.validate-release.outputs.version }}_aarch64-setup.exe
+          path: signed-windows-installer-arm64/renown_${{ needs.validate-release.outputs.version }}_aarch64-setup.exe
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -1635,9 +1635,9 @@ jobs:
           $ErrorActionPreference = 'Stop'
 
           if ($env:MATRIX_ARCH -eq 'x64') {
-            $sourceFile = "floral-notepaper_$($env:RELEASE_VERSION).exe"
+            $sourceFile = "renown_$($env:RELEASE_VERSION).exe"
           } else {
-            $sourceFile = "floral-notepaper_$($env:RELEASE_VERSION)_aarch64.exe"
+            $sourceFile = "renown_$($env:RELEASE_VERSION)_aarch64.exe"
           }
           $sourcePath = Join-Path 'signed-windows-binaries' $sourceFile
           if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
@@ -1648,7 +1648,7 @@ jobs:
 
           $layoutDir = 'msix-layout'
           New-Item -ItemType Directory -Path $layoutDir -Force | Out-Null
-          Copy-Item -LiteralPath $sourcePath -Destination (Join-Path $layoutDir 'floral-notepaper.exe') -Force
+          Copy-Item -LiteralPath $sourcePath -Destination (Join-Path $layoutDir 'renown.exe') -Force
 
           & 'scripts/build-msix.ps1' `
             -Version $env:RELEASE_VERSION `
@@ -1656,7 +1656,7 @@ jobs:
             -PublisherCN $env:MSIX_PUBLISHER_CN `
             -PublisherDisplayName $env:MSIX_PUBLISHER_DISPLAY_NAME `
             -Arch $env:MATRIX_ARCH `
-            -BinaryPath (Join-Path $layoutDir 'floral-notepaper.exe') `
+            -BinaryPath (Join-Path $layoutDir 'renown.exe') `
             -IconsDir 'src-tauri/icons' `
             -OutputDir 'msix-out'
           if ($LASTEXITCODE -ne 0) {
@@ -1670,9 +1670,9 @@ jobs:
             throw 'MSIX_SIGNING_CERTIFICATE_PASSWORD is not configured.'
           }
 
-          $msixPath = "msix-out/floral-notepaper_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
-          $certificatePath = "msix-signing-certificate/floral-notepaper_$($env:RELEASE_VERSION)_msix.cer"
-          $pfxPath = Join-Path $env:RUNNER_TEMP "floral-notepaper-msix-signing-$($env:MATRIX_ARCH).pfx"
+          $msixPath = "msix-out/renown_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
+          $certificatePath = "msix-signing-certificate/renown_$($env:RELEASE_VERSION)_msix.cer"
+          $pfxPath = Join-Path $env:RUNNER_TEMP "renown-msix-signing-$($env:MATRIX_ARCH).pfx"
           try {
             $pfxBytes = [Convert]::FromBase64String($env:MSIX_SIGNING_CERTIFICATE_BASE64)
             [IO.File]::WriteAllBytes($pfxPath, $pfxBytes)
@@ -1707,9 +1707,9 @@ jobs:
           $embeddedBinaryPath = Join-Path $env:RUNNER_TEMP "msix-embedded-$($env:MATRIX_ARCH).exe"
           $archive = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $msixPath).Path)
           try {
-            $entry = $archive.GetEntry('floral-notepaper.exe')
+            $entry = $archive.GetEntry('renown.exe')
             if (-not $entry) {
-              throw 'floral-notepaper.exe was not found inside the signed MSIX.'
+              throw 'renown.exe was not found inside the signed MSIX.'
             }
             $inputStream = $entry.Open()
             try {
@@ -1736,7 +1736,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: signed-windows-msix-${{ matrix.arch }}
-          path: msix-out/floral-notepaper_${{ needs.validate-release.outputs.version }}_${{ matrix.arch }}.msix
+          path: msix-out/renown_${{ needs.validate-release.outputs.version }}_${{ matrix.arch }}.msix
           if-no-files-found: error
           overwrite: true
           retention-days: 90
@@ -1746,7 +1746,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: msix-signing-certificate
-          path: msix-signing-certificate/floral-notepaper_${{ needs.validate-release.outputs.version }}_msix.cer
+          path: msix-signing-certificate/renown_${{ needs.validate-release.outputs.version }}_msix.cer
           if-no-files-found: error
           overwrite: true
           retention-days: 90
@@ -1800,8 +1800,8 @@ jobs:
           MSIX_PUBLISHER_CN: ${{ vars.MSIX_PUBLISHER_CN }}
           MSIX_SIGNING_CERTIFICATE_SHA256: ${{ vars.MSIX_SIGNING_CERTIFICATE_SHA256 }}
         run: |
-          $msix = "signed-windows-msix/floral-notepaper_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
-          $certificate = "msix-signing-certificate/floral-notepaper_$($env:RELEASE_VERSION)_msix.cer"
+          $msix = "signed-windows-msix/renown_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
+          $certificate = "msix-signing-certificate/renown_$($env:RELEASE_VERSION)_msix.cer"
           if (-not (Test-Path -LiteralPath $msix -PathType Leaf)) { throw "Signed MSIX package was not found at $msix." }
           Import-Certificate -FilePath $certificate -CertStoreLocation 'Cert:\LocalMachine\TrustedPeople' | Out-Null
           & 'scripts/verify-msix-package.ps1' `
@@ -1822,7 +1822,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $msix = "signed-windows-msix/floral-notepaper_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
+          $msix = "signed-windows-msix/renown_$($env:RELEASE_VERSION)_$($env:MATRIX_ARCH).msix"
 
           Add-AppxPackage -Path (Resolve-Path -LiteralPath $msix).Path -ForceApplicationShutdown
 
@@ -1844,7 +1844,7 @@ jobs:
           "- SignatureKind: $($package.SignatureKind)" >> $env:GITHUB_STEP_SUMMARY
           "- InstallLocation: $installDir" >> $env:GITHUB_STEP_SUMMARY
 
-          $exe = Join-Path $installDir 'floral-notepaper.exe'
+          $exe = Join-Path $installDir 'renown.exe'
           if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
             throw "Installed executable was not found at $exe."
           }
@@ -1853,7 +1853,7 @@ jobs:
           # app must at least reach the Rust setup stage (creating the
           # unvirtualized config dir). WebView rendering is reviewed manually.
           $process = Start-Process -FilePath $exe -PassThru
-          $configDir = Join-Path $env:APPDATA 'floral-notepaper'
+          $configDir = Join-Path $env:APPDATA 'Renown'
           $deadline = (Get-Date).AddSeconds(20)
           while ((Get-Date) -lt $deadline) {
             if (Test-Path -LiteralPath $configDir) {
@@ -1963,10 +1963,10 @@ jobs:
           MSIX_SIGNING_CERTIFICATE_SHA256: ${{ vars.MSIX_SIGNING_CERTIFICATE_SHA256 }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $certificate = "msix-signing-certificate/floral-notepaper_$($env:RELEASE_VERSION)_msix.cer"
+          $certificate = "msix-signing-certificate/renown_$($env:RELEASE_VERSION)_msix.cer"
           Import-Certificate -FilePath $certificate -CertStoreLocation 'Cert:\LocalMachine\TrustedPeople' | Out-Null
           foreach ($arch in @('x64', 'aarch64')) {
-            $msix = "signed-windows-msix/floral-notepaper_$($env:RELEASE_VERSION)_$arch.msix"
+            $msix = "signed-windows-msix/renown_$($env:RELEASE_VERSION)_$arch.msix"
             if (-not (Test-Path -LiteralPath $msix -PathType Leaf)) {
               throw "Signed MSIX package was not found at $msix."
             }
@@ -1988,8 +1988,8 @@ jobs:
           & 'scripts/build-msixupload.ps1' `
             -Version $env:RELEASE_VERSION `
             -MsixPaths @(
-              "signed-windows-msix/floral-notepaper_$($env:RELEASE_VERSION)_x64.msix",
-              "signed-windows-msix/floral-notepaper_$($env:RELEASE_VERSION)_aarch64.msix"
+              "signed-windows-msix/renown_$($env:RELEASE_VERSION)_x64.msix",
+              "signed-windows-msix/renown_$($env:RELEASE_VERSION)_aarch64.msix"
             ) `
             -OutputDir 'upload-out'
           if ($LASTEXITCODE -ne 0) {
@@ -2024,7 +2024,7 @@ jobs:
           MSSTORE_APP_ID: ${{ vars.MSSTORE_APP_ID }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $upload = "upload-out/floral-notepaper_$($env:RELEASE_VERSION).msixupload"
+          $upload = "upload-out/renown_$($env:RELEASE_VERSION).msixupload"
           msstore publish $upload -i (Split-Path $upload) -id $env:MSSTORE_APP_ID
           if ($LASTEXITCODE -ne 0) {
             throw "msstore publish failed with exit code $LASTEXITCODE."
@@ -2115,21 +2115,21 @@ jobs:
             deb_candidates+=("$candidate")
           done < <(find src-tauri/target/release/bundle/deb -type f -name '*.deb' | sort)
           require_one 'DEB package' "${deb_candidates[@]}"
-          cp "${deb_candidates[0]}" "release-assets/floral-notepaper_${RELEASE_VERSION}_amd64.deb"
+          cp "${deb_candidates[0]}" "release-assets/renown_${RELEASE_VERSION}_amd64.deb"
 
           rpm_candidates=()
           while IFS= read -r candidate; do
             rpm_candidates+=("$candidate")
           done < <(find src-tauri/target/release/bundle/rpm -type f -name '*.rpm' | sort)
           require_one 'RPM package' "${rpm_candidates[@]}"
-          cp "${rpm_candidates[0]}" "release-assets/floral-notepaper-${RELEASE_VERSION}-1.x86_64.rpm"
+          cp "${rpm_candidates[0]}" "release-assets/renown-${RELEASE_VERSION}-1.x86_64.rpm"
 
           appimage_candidates=()
           while IFS= read -r candidate; do
             appimage_candidates+=("$candidate")
           done < <(find src-tauri/target/release/bundle/appimage -type f -name '*.AppImage' | sort)
           require_one 'AppImage' "${appimage_candidates[@]}"
-          cp "${appimage_candidates[0]}" "release-assets/floral-notepaper_${RELEASE_VERSION}_amd64.AppImage"
+          cp "${appimage_candidates[0]}" "release-assets/renown_${RELEASE_VERSION}_amd64.AppImage"
 
       - name: Upload Linux release assets
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -2201,7 +2201,7 @@ jobs:
           fi
 
           mkdir -p release-assets
-          dmg_asset="release-assets/floral-notepaper_${RELEASE_VERSION}_x64.dmg"
+          dmg_asset="release-assets/renown_${RELEASE_VERSION}_x64.dmg"
           cp "${dmg_candidates[0]}" "$dmg_asset"
           xattr -cr "$dmg_asset"
 
@@ -2209,7 +2209,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: macos-x64-release-asset
-          path: release-assets/floral-notepaper_${{ needs.validate-release.outputs.version }}_x64.dmg
+          path: release-assets/renown_${{ needs.validate-release.outputs.version }}_x64.dmg
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -2275,7 +2275,7 @@ jobs:
           fi
 
           mkdir -p release-assets
-          dmg_asset="release-assets/floral-notepaper_${RELEASE_VERSION}_aarch64.dmg"
+          dmg_asset="release-assets/renown_${RELEASE_VERSION}_aarch64.dmg"
           cp "${dmg_candidates[0]}" "$dmg_asset"
           xattr -cr "$dmg_asset"
 
@@ -2283,7 +2283,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: macos-aarch64-release-asset
-          path: release-assets/floral-notepaper_${{ needs.validate-release.outputs.version }}_aarch64.dmg
+          path: release-assets/renown_${{ needs.validate-release.outputs.version }}_aarch64.dmg
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -2379,17 +2379,17 @@ jobs:
           set -euo pipefail
 
           required_assets=(
-            "floral-notepaper_${RELEASE_VERSION}.exe"
-            "floral-notepaper_${RELEASE_VERSION}_x64-setup.exe"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64-setup.exe"
-            "floral-notepaper_${RELEASE_VERSION}_x64.msix"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64.msix"
-            "floral-notepaper_${RELEASE_VERSION}_msix.cer"
-            "floral-notepaper_${RELEASE_VERSION}_amd64.deb"
-            "floral-notepaper-${RELEASE_VERSION}-1.x86_64.rpm"
-            "floral-notepaper_${RELEASE_VERSION}_amd64.AppImage"
-            "floral-notepaper_${RELEASE_VERSION}_x64.dmg"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64.dmg"
+            "renown_${RELEASE_VERSION}.exe"
+            "renown_${RELEASE_VERSION}_x64-setup.exe"
+            "renown_${RELEASE_VERSION}_aarch64-setup.exe"
+            "renown_${RELEASE_VERSION}_x64.msix"
+            "renown_${RELEASE_VERSION}_aarch64.msix"
+            "renown_${RELEASE_VERSION}_msix.cer"
+            "renown_${RELEASE_VERSION}_amd64.deb"
+            "renown-${RELEASE_VERSION}-1.x86_64.rpm"
+            "renown_${RELEASE_VERSION}_amd64.AppImage"
+            "renown_${RELEASE_VERSION}_x64.dmg"
+            "renown_${RELEASE_VERSION}_aarch64.dmg"
           )
           for asset in "${required_assets[@]}"; do
             if [[ ! -f "release-assets/$asset" ]]; then
@@ -2576,17 +2576,17 @@ jobs:
           set -euo pipefail
 
           required_assets=(
-            "floral-notepaper_${RELEASE_VERSION}.exe"
-            "floral-notepaper_${RELEASE_VERSION}_x64-setup.exe"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64-setup.exe"
-            "floral-notepaper_${RELEASE_VERSION}_x64.msix"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64.msix"
-            "floral-notepaper_${RELEASE_VERSION}_msix.cer"
-            "floral-notepaper_${RELEASE_VERSION}_amd64.deb"
-            "floral-notepaper-${RELEASE_VERSION}-1.x86_64.rpm"
-            "floral-notepaper_${RELEASE_VERSION}_amd64.AppImage"
-            "floral-notepaper_${RELEASE_VERSION}_x64.dmg"
-            "floral-notepaper_${RELEASE_VERSION}_aarch64.dmg"
+            "renown_${RELEASE_VERSION}.exe"
+            "renown_${RELEASE_VERSION}_x64-setup.exe"
+            "renown_${RELEASE_VERSION}_aarch64-setup.exe"
+            "renown_${RELEASE_VERSION}_x64.msix"
+            "renown_${RELEASE_VERSION}_aarch64.msix"
+            "renown_${RELEASE_VERSION}_msix.cer"
+            "renown_${RELEASE_VERSION}_amd64.deb"
+            "renown-${RELEASE_VERSION}-1.x86_64.rpm"
+            "renown_${RELEASE_VERSION}_amd64.AppImage"
+            "renown_${RELEASE_VERSION}_x64.dmg"
+            "renown_${RELEASE_VERSION}_aarch64.dmg"
           )
           for asset in "${required_assets[@]}"; do
             if [[ ! -f "release-assets/$asset" ]]; then

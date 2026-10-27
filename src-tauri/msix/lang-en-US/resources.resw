@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <data name="AppName">
-    <value>Floral Notepaper</value>
+    <value>Renown</value>
   </data>
   <data name="AppDescription">
-    <value>Floral Notepaper - lightweight local note app</value>
+    <value>Renown - desktop organizer and sticky notes</value>
   </data>
 </root>

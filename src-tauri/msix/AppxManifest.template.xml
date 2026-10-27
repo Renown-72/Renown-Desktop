@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  MSIX package manifest template for the Microsoft Store build of 花笺.
+  MSIX package manifest template for the Microsoft Store build of Renown.
 
   Placeholders are filled by scripts/build-msix.ps1:
     __VERSION__                four-part version (X.Y.Z.0)
@@ -13,7 +13,7 @@
   Notes:
   - Registry and AppData writes are unvirtualized (desktop6 properties plus the
     unvirtualizedResources restricted capability) so the tray autostart
-    registry key and %APPDATA%\floral-notepaper keep behaving like the NSIS
+    registry key and %APPDATA%\renown keep behaving like the NSIS
     install instead of being redirected per-package and removed on uninstall.
   - The app is a full-trust desktop application: runFullTrust + the
     windows.fullTrustProcess extension.
@@ -58,7 +58,7 @@
   <Applications>
     <Application
       Id="App"
-      Executable="floral-notepaper.exe"
+      Executable="renown.exe"
       EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="ms-resource:AppName"
@@ -72,7 +72,7 @@
       <Extensions>
         <desktop:Extension
           Category="windows.fullTrustProcess"
-          Executable="floral-notepaper.exe" />
+          Executable="renown.exe" />
         <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="markdown">
             <uap:DisplayName>Markdown Document</uap:DisplayName>

@@ -30,7 +30,7 @@ const DEFAULT_GITHUB_REPO: &str = "";
 const MIRROR_CHYAN_API_BASE: &str = "https://mirrorchyan.com/api/resources";
 const MIRROR_CHYAN_RES_ID: &str = "floral";
 const MIRROR_CHYAN_RES_ID_OVERRIDE_ENV: &str = "RENOWN_MIRROR_CHYAN_RES_ID";
-const MIRROR_CHYAN_USER_AGENT: &str = "floral_notepaper";
+const MIRROR_CHYAN_USER_AGENT: &str = "renown";
 
 fn mirror_chyan_res_id() -> &'static str {
     if let Ok(value) = env::var(MIRROR_CHYAN_RES_ID_OVERRIDE_ENV) {
@@ -537,7 +537,7 @@ fn build_mirror_chyan_api_client() -> Result<Client, AppError> {
     Client::builder()
         .connect_timeout(Duration::from_secs(10))
         .timeout(Duration::from_secs(15))
-        .user_agent("floral-notepaper-updater")
+        .user_agent("renown-updater")
         .build()
         .map_err(|error| errors::mirror_chyan_api_error(format!("无法创建 HTTP 客户端：{error}")))
 }
@@ -660,7 +660,7 @@ fn check_mirror_chyan_api(
     let asset_name = mirror_chyan_asset_url
         .as_deref()
         .and_then(extract_filename_from_url)
-        .unwrap_or_else(|| format!("floral-notepaper_{version_str}_{os}_{arch}"));
+        .unwrap_or_else(|| format!("renown_{version_str}_{os}_{arch}"));
     let has_url = mirror_chyan_asset_url.is_some();
     // MirrorChyan API does not provide asset SHA-256 checksums in its response,
     // so hash verification is explicitly disabled for MirrorChyan-sourced downloads.
@@ -716,7 +716,7 @@ fn build_github_api_client() -> Result<Client, AppError> {
     Client::builder()
         .connect_timeout(Duration::from_secs(10))
         .timeout(Duration::from_secs(15))
-        .user_agent("floral-notepaper-updater")
+        .user_agent("renown-updater")
         .build()
         .map_err(|error| errors::github_api_error(format!("无法创建 HTTP 客户端：{error}")))
 }

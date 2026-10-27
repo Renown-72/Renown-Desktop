@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Builds an MSIX package for 花笺 (Floral Notepaper) from a Windows executable.
+  Builds an MSIX package for Renown from a Windows executable.
 
 .DESCRIPTION
   Renders AppxManifest.xml from src-tauri/msix/AppxManifest.template.xml,
@@ -32,7 +32,7 @@
   written as arm64, the only value Windows manifests accept).
 
 .PARAMETER BinaryPath
-  Path to floral-notepaper.exe to embed. Release builds pass a signed binary;
+  Path to renown.exe to embed. Release builds pass a signed binary;
   local unsigned builds are also supported for package inspection.
 
 .PARAMETER IconsDir
@@ -40,13 +40,13 @@
   (normally src-tauri/icons).
 
 .PARAMETER OutputDir
-  Directory where floral-notepaper_<version>_<arch>.msix is written.
+  Directory where renown_<version>_<arch>.msix is written.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File scripts/build-msix.ps1 `
-    -Version 1.1.0 -IdentityName FloralNotepaper `
+    -Version 1.1.0 -IdentityName Renown.Desktop `
     -PublisherCN "CN=Example Inc." -PublisherDisplayName "Example Inc." `
-    -Arch x64 -BinaryPath signed/floral-notepaper.exe `
+    -Arch x64 -BinaryPath signed/renown.exe `
     -IconsDir src-tauri/icons -OutputDir msix-out
 #>
 [CmdletBinding()]
@@ -147,7 +147,7 @@ Assert-ManifestPlaceholdersFilled -Content $manifest
 
 # --- Assemble the layout ----------------------------------------------------
 
-$layoutDir = Join-Path (Join-Path $env:TEMP 'floral-msix-layout') $Arch
+$layoutDir = Join-Path (Join-Path $env:TEMP 'renown-msix-layout') $Arch
 if (Test-Path -LiteralPath $layoutDir) {
   Remove-Item -LiteralPath $layoutDir -Recurse -Force
 }
@@ -159,7 +159,7 @@ New-Item -ItemType Directory -Path $layoutDir -Force | Out-Null
   (New-Object System.Text.UTF8Encoding($false))
 )
 
-Copy-Item -LiteralPath $BinaryPath -Destination (Join-Path $layoutDir 'floral-notepaper.exe') -Force
+Copy-Item -LiteralPath $BinaryPath -Destination (Join-Path $layoutDir 'renown.exe') -Force
 
 $logoAssets = @(
   'StoreLogo.png',
@@ -184,7 +184,7 @@ foreach ($asset in $logoAssets) {
 # --- Generate resources.pri --------------------------------------------------
 
 $msixDir = Join-Path $PSScriptRoot '..\src-tauri\msix'
-$resRoot = Join-Path (Join-Path $env:TEMP 'floral-msix-res') $Arch
+$resRoot = Join-Path (Join-Path $env:TEMP 'renown-msix-res') $Arch
 if (Test-Path -LiteralPath $resRoot) {
   Remove-Item -LiteralPath $resRoot -Recurse -Force
 }
@@ -267,7 +267,7 @@ $makeAppx = Get-MakeAppxPath
 Write-Host "Using MakeAppx at $makeAppx"
 
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
-$outputPath = Join-Path $OutputDir "floral-notepaper_${Version}_${Arch}.msix"
+$outputPath = Join-Path $OutputDir "renown_${Version}_${Arch}.msix"
 if (Test-Path -LiteralPath $outputPath) {
   Remove-Item -LiteralPath $outputPath -Force
 }
@@ -282,7 +282,7 @@ if (-not (Test-Path -LiteralPath $outputPath -PathType Leaf)) {
 
 # --- Unpack and verify ------------------------------------------------------
 
-$verifyDir = Join-Path (Join-Path $env:TEMP 'floral-msix-verify') $Arch
+$verifyDir = Join-Path (Join-Path $env:TEMP 'renown-msix-verify') $Arch
 if (Test-Path -LiteralPath $verifyDir) {
   Remove-Item -LiteralPath $verifyDir -Recurse -Force
 }
@@ -318,9 +318,9 @@ if ($identity.ProcessorArchitecture -ne $manifestArch) {
   throw "Unexpected ProcessorArchitecture in packed manifest: $($identity.ProcessorArchitecture), expected $manifestArch"
 }
 
-$packedBinaryPath = Join-Path $verifyDir 'floral-notepaper.exe'
+$packedBinaryPath = Join-Path $verifyDir 'renown.exe'
 if (-not (Test-Path -LiteralPath $packedBinaryPath -PathType Leaf)) {
-  throw 'floral-notepaper.exe was not found in the packed package.'
+  throw 'renown.exe was not found in the packed package.'
 }
 $packedSha256 = (Get-FileHash -LiteralPath $packedBinaryPath -Algorithm SHA256).Hash
 if ($packedSha256 -ne $binarySha256) {

@@ -60,7 +60,7 @@ $ErrorActionPreference = 'Stop'
 
 # Keep local packages byte-for-byte aligned with the package identity configured
 # as GitHub Actions repository variables for the production release workflow.
-$msixIdentityName = 'u202f.FloralNote'
+$msixIdentityName = 'Renown.Desktop'
 $msixPublisherCN = 'CN=6A63F2B3-04BC-47BA-960C-D62F116042CD'
 $msixPublisherDisplayName = 'u202f'
 
@@ -215,7 +215,7 @@ try {
     }
 
     $targetReleaseDir = Join-Path $repoRoot "src-tauri/target/$rustTarget/release"
-    $binaryPath = Join-Path $targetReleaseDir 'floral-notepaper.exe'
+    $binaryPath = Join-Path $targetReleaseDir 'renown.exe'
     if (-not (Test-Path -LiteralPath $binaryPath -PathType Leaf)) {
       throw "Built executable was not found: $binaryPath"
     }
@@ -228,12 +228,12 @@ try {
     }
 
     $portableName = if ($architecture -eq 'x64') {
-      "floral-notepaper_${Version}.exe"
+      "renown_${Version}.exe"
     } else {
-      "floral-notepaper_${Version}_aarch64.exe"
+      "renown_${Version}_aarch64.exe"
     }
     $portableOutput = Join-Path $outputRoot $portableName
-    $installerOutput = Join-Path $outputRoot "floral-notepaper_${Version}_${architecture}-setup.exe"
+    $installerOutput = Join-Path $outputRoot "renown_${Version}_${architecture}-setup.exe"
     Copy-Item -LiteralPath $binaryPath -Destination $portableOutput -Force
     Copy-Item -LiteralPath $installer.FullName -Destination $installerOutput -Force
     [void]$artifacts.Add($portableOutput)
@@ -250,7 +250,7 @@ try {
       -IconsDir (Join-Path $repoRoot 'src-tauri/icons') `
       -OutputDir $outputRoot
 
-    $msixPath = Join-Path $outputRoot "floral-notepaper_${Version}_${architecture}.msix"
+    $msixPath = Join-Path $outputRoot "renown_${Version}_${architecture}.msix"
     if (-not (Test-Path -LiteralPath $msixPath -PathType Leaf)) {
       throw "Built MSIX package was not found: $msixPath"
     }
@@ -265,7 +265,7 @@ try {
     -OutputDir $outputRoot `
     -AllowUnsignedPackages
 
-  $msixUploadPath = Join-Path $outputRoot "floral-notepaper_${Version}.msixupload"
+  $msixUploadPath = Join-Path $outputRoot "renown_${Version}.msixupload"
   if (-not (Test-Path -LiteralPath $msixUploadPath -PathType Leaf)) {
     throw "Built MSIX upload container was not found: $msixUploadPath"
   }

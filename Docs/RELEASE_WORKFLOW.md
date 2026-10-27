@@ -1,6 +1,6 @@
 # Release 发布流程
 
-本文档面向花笺维护者，说明 [Release Workflow](../.github/workflows/release.yml) 的配置、触发方式、构建与签名链路、验证规则以及失败后的处理方式。
+本文档面向Renown维护者，说明 [Release Workflow](../.github/workflows/release.yml) 的配置、触发方式、构建与签名链路、验证规则以及失败后的处理方式。
 
 该 Workflow 负责生成经过验证的多平台发布产物，并创建或更新 GitHub Draft Release。它不会自动把 Draft Release 发布为正式 Release。
 
@@ -171,7 +171,7 @@ Docs/release-note/1.2.3.md
 ### 4. 执行发布前检查
 
 ```bash
-cargo test --manifest-path src-tauri/Cargo.toml -p floral-notepaper --lib
+cargo test --manifest-path src-tauri/Cargo.toml -p renown --lib
 npm test
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets
 npm run lint
@@ -274,8 +274,8 @@ NSIS 打包前，Workflow 会记录已签名主程序的 SHA-256。打包后再�
 
 x64 与 AArch64 的差异仅在目标路径与 bundle 参数：
 
-- x64：`src-tauri/target/release/`，`tauri bundle --bundles nsis`，产物 `floral-notepaper_<v>_x64-setup.exe`；
-- AArch64：`src-tauri/target/aarch64-pc-windows-msvc/release/`，`tauri bundle --target aarch64-pc-windows-msvc --bundles nsis`，产物 `floral-notepaper_<v>_aarch64-setup.exe`。
+- x64：`src-tauri/target/release/`，`tauri bundle --bundles nsis`，产物 `renown_<v>_x64-setup.exe`；
+- AArch64：`src-tauri/target/aarch64-pc-windows-msvc/release/`，`tauri bundle --target aarch64-pc-windows-msvc --bundles nsis`，产物 `renown_<v>_aarch64-setup.exe`。
 
 ### 安装测试
 
@@ -307,19 +307,19 @@ x64 安装器在 `windows-latest` 上测试；AArch64 安装器在 `windows-11-a
 
 Workflow 要求以下十一个产物全部存在：
 
-| 平台                 | 文件名                                       |
-| -------------------- | -------------------------------------------- |
-| Windows portable     | `floral-notepaper_VERSION.exe`               |
-| Windows NSIS x64     | `floral-notepaper_VERSION_x64-setup.exe`     |
-| Windows NSIS AArch64 | `floral-notepaper_VERSION_aarch64-setup.exe` |
-| Windows MSIX x64     | `floral-notepaper_VERSION_x64.msix`          |
-| Windows MSIX AArch64 | `floral-notepaper_VERSION_aarch64.msix`      |
-| Windows MSIX 证书    | `floral-notepaper_VERSION_msix.cer`          |
-| Linux DEB            | `floral-notepaper_VERSION_amd64.deb`         |
-| Linux RPM            | `floral-notepaper-VERSION-1.x86_64.rpm`      |
-| Linux AppImage       | `floral-notepaper_VERSION_amd64.AppImage`    |
-| macOS Intel          | `floral-notepaper_VERSION_x64.dmg`           |
-| macOS Apple Silicon  | `floral-notepaper_VERSION_aarch64.dmg`       |
+| 平台                 | 文件名                             |
+| -------------------- | ---------------------------------- |
+| Windows portable     | `renown_VERSION.exe`               |
+| Windows NSIS x64     | `renown_VERSION_x64-setup.exe`     |
+| Windows NSIS AArch64 | `renown_VERSION_aarch64-setup.exe` |
+| Windows MSIX x64     | `renown_VERSION_x64.msix`          |
+| Windows MSIX AArch64 | `renown_VERSION_aarch64.msix`      |
+| Windows MSIX 证书    | `renown_VERSION_msix.cer`          |
+| Linux DEB            | `renown_VERSION_amd64.deb`         |
+| Linux RPM            | `renown-VERSION-1.x86_64.rpm`      |
+| Linux AppImage       | `renown_VERSION_amd64.AppImage`    |
+| macOS Intel          | `renown_VERSION_x64.dmg`           |
+| macOS Apple Silicon  | `renown_VERSION_aarch64.dmg`       |
 
 其中 `VERSION` 是不带 `v` 的版本号。
 
@@ -339,7 +339,7 @@ Tauri bundler 不生成 MSIX。`build-windows-msix` 使用 `scripts/build-msix.p
 - 从 `src-tauri/msix/AppxManifest.template.xml` 渲染清单（版本转四段 `X.Y.Z.0`；`ProcessorArchitecture` 为 `x64` 或 `AArch64`；`Identity Name` / `Publisher` 来自仓库级 Variables）；
 - 清单 `DisplayName` / `Description` 使用 `ms-resource:` 引用；构建脚本把 `src-tauri/msix/lang-*/resources.resw` 规范化为 MakePri 要求的 `Strings/<BCP-47>/Resources.resw`，移除 MakePri 默认的 `Language` 自动资源包拆分，把 zh-CN / en-US / zh-HK 全部写入单一 `resources.pri`，并用 `MSIX_IDENTITY_NAME` 固定 PRI Resource Map Name；生成后 dump PRI，确认包身份、两个资源键和三种语言全部存在，使独立 MSIX 安装后的名称随系统语言显示；
 - Markdown 与纯文本关联分别使用独立的 `uap:Extension Category="windows.fileTypeAssociation"`；每个 Extension 只能包含一个 `uap:FileTypeAssociation`；
-- 清单声明 `desktop6:RegistryWriteVirtualization` / `desktop6:FileSystemWriteVirtualization` 为 `disabled`，并声明 `rescap:Capability Name="unvirtualizedResources"`，使托盘自启动（HKCU Run 键）与 `%APPDATA%\floral-notepaper` 配置写入不被 MSIX 虚拟化；
+- 清单声明 `desktop6:RegistryWriteVirtualization` / `desktop6:FileSystemWriteVirtualization` 为 `disabled`，并声明 `rescap:Capability Name="unvirtualizedResources"`，使托盘自启动（HKCU Run 键）与 `%APPDATA%\renown` 配置写入不被 MSIX 虚拟化；
 - 用 `MakeAppx.exe` 打包，随后 `makeappx unpack` 回验清单身份、版本、架构、`resources.pri` 与内嵌主程序哈希。
 
 ### 签名
@@ -359,7 +359,7 @@ Tauri bundler 不生成 MSIX。`build-windows-msix` 使用 `scripts/build-msix.p
 - 将 Workflow 导出的公开 `.cer` 临时导入 runner 的 `LocalMachine\TrustedPeople`，复验指纹与 Subject；
 - `Add-AppxPackage` 安装（失败不静默放宽）；
 - `Get-AppxPackage` 断言版本与 `SignatureKind`；
-- 从安装目录启动主程序：进程存活或至少创建非虚拟化的 `%APPDATA%\floral-notepaper` 配置目录（CI 无桌面会话，WebView 渲染列入人工核验）；
+- 从安装目录启动主程序：进程存活或至少创建非虚拟化的 `%APPDATA%\renown` 配置目录（CI 无桌面会话，WebView 渲染列入人工核验）；
 - 第一实例存活时启动第二实例，断言单实例转发（第二实例自行退出）；
 - `Remove-AppxPackage` 卸载并断言注册清除。
 

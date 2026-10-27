@@ -1,6 +1,6 @@
-# Microsoft Store 发布指南（花笺 MSIX）
+# Microsoft Store 发布指南（Renown MSIX）
 
-本文档面向花笺维护者，说明 MSIX 版本发布到 Microsoft Store 所需的**一次性设置**、**配置项**、**发布行为**与**失败处理**。
+本文档面向Renown维护者，说明 MSIX 版本发布到 Microsoft Store 所需的**一次性设置**、**配置项**、**发布行为**与**失败处理**。
 
 发布自动化本身集成在 [Release Workflow](../.github/workflows/release.yml) 中（`publish-msix-store` Job），本文档只覆盖 Store 侧的准备与运维。
 
@@ -30,7 +30,7 @@
 ### 2. 创建产品并保留名称
 
 - Partner Center → Apps and games → 新建产品，**产品类型选择 MSIX**。
-- 保留一个唯一的应用名称（例如 `FloralNotepaper`）。该名称将成为 MSIX 清单的 `Identity Name`，写入仓库变量 `MSIX_IDENTITY_NAME`。
+- 保留一个唯一的应用名称（例如 `Renown.Desktop`）。该名称将成为 MSIX 清单的 `Identity Name`，写入仓库变量 `MSIX_IDENTITY_NAME`。
 - 记录 Partner Center 产品 ID（形如 `9PXXXXXXXXXX`），写入仓库变量 `MSSTORE_APP_ID`。
 
 ### 3. 首次提交（人工）
@@ -120,7 +120,7 @@ MSIX 安装（无论来自 Microsoft Store 还是侧载的 `.msix` 文件）均�
 ## 人工核验清单（每次发布）
 
 1. `verify-windows-msix-install` 摘要：x64 与 AArch64 安装/启动/卸载通过；
-2. GitHub Draft Release 含 `floral-notepaper_X.Y.Z_x64.msix` 与 `_aarch64.msix`，SHA256SUMS 一致；
+2. GitHub Draft Release 含 `renown_X.Y.Z_x64.msix` 与 `_aarch64.msix`，SHA256SUMS 一致；
 3. Partner Center 中该版本 submission 的包列表包含 x64 与 AArch64；
 4. Store 上架资料（截图、描述、分级）无需更新（如版本无重大变化可沿用）；
 5. 认证完成后抽查 Store 页面版本号与本次 Tag 一致。
