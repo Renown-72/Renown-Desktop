@@ -14,7 +14,7 @@
 | ------------ | ---------------------------------------------- |
 | 技术栈       | Tauri 2 + Rust + React 19 + TypeScript         |
 | 前端构建     | ✅ `npm run build` 通过                        |
-| 后端编译     | ✅ `cargo check` / `cargo test` 通过（226 项） |
+| 后端编译     | ✅ `cargo check` / `cargo test` 通过（229 项） |
 | 前端测试     | ✅ `npm test` 通过（115 项）                   |
 | 可执行文件   | ✅ `npx tauri build` 产出                      |
 | 桌面整理功能 | ✅ 栅栏 / 规则引擎 / 标签页 / 多屏布局 / 快照  |
