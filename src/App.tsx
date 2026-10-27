@@ -6,6 +6,8 @@ import { NotePad } from "./components/NotePad";
 import { TileShowcase } from "./components/TileShowcase";
 import { ToastContainer } from "./components/Toast";
 import { tabToIndentListener } from "indent-textarea";
+import { FenceManager } from "./features/fence/FenceManager";
+import { FenceOverlay } from "./features/fence/FenceOverlay";
 import { getConfig } from "./features/settings/api";
 import { applyTheme, watchSystemTheme } from "./features/settings/theme";
 import type { AppConfig, ThemeOption } from "./features/settings/types";
@@ -80,16 +82,23 @@ function App() {
 
   return (
     <ContextMenuProvider>
-      <div className="app-window-shell h-screen font-body text-ink overflow-hidden">
-        {activeView === "main" ? (
-          <MainWindow />
-        ) : activeView === "notepad" ? (
-          <NotePad initialNoteId={route.noteId} />
-        ) : (
-          <TileShowcase noteId={route.noteId} />
-        )}
-        <ToastContainer />
-      </div>
+      {activeView === "fence" && route.fenceId ? (
+        // 栅栏窗口是透明无边框的，不能套 app-window-shell 的背景与圆角。
+        <FenceOverlay fenceId={route.fenceId} />
+      ) : activeView === "fence-manager" ? (
+        <FenceManager />
+      ) : (
+        <div className="app-window-shell h-screen font-body text-ink overflow-hidden">
+          {activeView === "main" ? (
+            <MainWindow />
+          ) : activeView === "notepad" ? (
+            <NotePad initialNoteId={route.noteId} />
+          ) : (
+            <TileShowcase noteId={route.noteId} />
+          )}
+          <ToastContainer />
+        </div>
+      )}
     </ContextMenuProvider>
   );
 }

@@ -1,4 +1,5 @@
 pub mod desktop;
+pub mod fence;
 pub mod json_io;
 pub mod locales;
 pub mod services;
@@ -464,6 +465,12 @@ pub fn run() {
                 updater::start_auto_check_scheduler(app.handle().clone());
             }
             desktop::setup_desktop(app)?;
+            // 桌面栅栏：注册服务并异步同步桌面条目。
+            if let Err(error) = fence::init(app) {
+                eprintln!("failed to initialize fence service: {error}");
+            } else {
+                fence::startup_sync(app.handle().clone());
+            }
             Ok(())
         })
         .on_window_event(desktop::handle_window_event)
@@ -512,7 +519,45 @@ pub fn run() {
             updater::commands::update_install,
             updater::commands::update_install_prepare_report,
             updater::commands::update_cancel,
-            take_startup_file
+            take_startup_file,
+            fence::commands::fence_get_config,
+            fence::commands::fence_get_monitors,
+            fence::commands::fence_sync_desktop,
+            fence::commands::fence_apply_rules,
+            fence::commands::fence_create,
+            fence::commands::fence_delete,
+            fence::commands::fence_rename,
+            fence::commands::fence_set_geometry,
+            fence::commands::fence_set_rolled_up,
+            fence::commands::fence_set_view,
+            fence::commands::fence_assign_item,
+            fence::commands::fence_unassign_item,
+            fence::commands::fence_reorder_items,
+            fence::commands::fence_get_item,
+            fence::commands::fence_make_tab,
+            fence::commands::fence_split_tab,
+            fence::commands::fence_set_active_tab,
+            fence::commands::fence_set_tab_order,
+            fence::commands::fence_get_rules,
+            fence::commands::fence_set_rules,
+            fence::commands::fence_list_templates,
+            fence::commands::fence_apply_template,
+            fence::commands::fence_save_snapshot,
+            fence::commands::fence_restore_snapshot,
+            fence::commands::fence_delete_snapshot,
+            fence::commands::fence_set_hide_real_icons,
+            fence::commands::fence_set_icon_size,
+            fence::commands::fence_get_icon,
+            fence::commands::fence_clear_icon_cache,
+            fence::commands::fence_open_item,
+            fence::commands::fence_place_window,
+            fence::commands::fence_set_window_topmost,
+            fence::commands::fence_desktop_available,
+            fence::commands::fence_open_manager,
+            fence::commands::fence_sync_windows,
+            fence::commands::fence_open_window,
+            fence::commands::fence_close_window,
+            fence::commands::fence_apply_desktop_layer
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

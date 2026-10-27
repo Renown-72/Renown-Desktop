@@ -27,10 +27,9 @@ async function fetchContributors() {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/contributors?per_page=100`,
-    { headers },
-  );
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contributors?per_page=100`, {
+    headers,
+  });
   if (!res.ok) {
     throw new Error(`GitHub API responded ${res.status}: ${res.statusText}`);
   }

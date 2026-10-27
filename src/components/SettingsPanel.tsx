@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { checkGlobalShortcut, chooseBackgroundImage } from "../features/settings/api";
+import { openManager } from "../features/fence/api";
 import { UpdateSettingsSection } from "../features/update/UpdateSettingsSection";
 import type {
   AppConfig,
@@ -128,6 +129,27 @@ export function SettingsPanel({ config, onChange, onMigrateDataDir, onClose }: S
               watchSystemTheme(v);
             }}
           />
+        </section>
+
+        <section className="space-y-2">
+          <label className="block text-[11px] font-body text-ink-faint">
+            {t("settings.fence.label", { defaultValue: "桌面整理" })}
+          </label>
+          <button
+            type="button"
+            className="w-full flex items-center justify-between gap-2 rounded-lg border border-paper-deep/40 bg-paper-warm/60 px-3 py-2 text-[12px] font-body text-ink-soft hover:border-bamboo hover:text-bamboo transition-colors cursor-pointer"
+            onClick={() => {
+              void openManager();
+            }}
+          >
+            <span>{t("settings.fence.open", { defaultValue: "打开桌面整理" })}</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <p className="text-[11px] font-body text-ink-ghost leading-relaxed">
+            {t("settings.fence.hint", {
+              defaultValue: "把桌面图标按规则归进栅栏，支持标签页与多屏布局。",
+            })}
+          </p>
         </section>
 
         <section className="space-y-2">

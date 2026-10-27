@@ -227,6 +227,11 @@
       "zhHK": "繁體中文"
     },
     "dataDir": "數據目錄",
+    "fence": {
+      "label": "桌面整理",
+      "open": "開啟桌面整理",
+      "hint": "把桌面圖示按規則歸進柵欄，支援標籤頁與多螢幕佈局。"
+    },
     "openAtCursor": "快捷鍵開啟時跟隨滑鼠位置",
     "quickNoteShortcut": "快捷記錄快捷鍵",
     "rememberSurfaceSize": "記住小窗尺寸",

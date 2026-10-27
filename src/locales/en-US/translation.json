@@ -227,6 +227,11 @@
       "zhHK": "繁體中文"
     },
     "dataDir": "Data directory",
+    "fence": {
+      "label": "Desktop organizer",
+      "open": "Open desktop organizer",
+      "hint": "Group desktop icons into fences with rules, tabs and multi-monitor layouts."
+    },
     "openAtCursor": "Open near cursor with shortcut",
     "quickNoteShortcut": "Quick Note shortcut",
     "rememberSurfaceSize": "Remember surface size",

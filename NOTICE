@@ -1,0 +1,87 @@
+Renown
+Copyright 2026 Renown Contributors
+
+This product includes software developed by third parties. The notices below are
+provided in accordance with the terms of the respective licenses.
+
+================================================================================
+PecoFence — Apache License 2.0
+================================================================================
+
+The desktop-fence subsystem of Renown (source files under
+`src-tauri/src/fence/`) is a Rust port of PecoFence's fence model, rule engine,
+desktop enumeration, shell icon extraction, monitor fingerprinting and Win32
+window-layer logic.
+
+    PecoFence
+    Copyright 2026 PecoFence contributors
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this software except in compliance with the License. You may obtain a
+    copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations
+    under the License.
+
+    Upstream: https://github.com/DayuanJiang/PecoFence
+
+Changes made by Renown relative to PecoFence:
+
+  * The Direct2D/Composition renderer (`crates/render`) is not used. Fence
+    windows are drawn by a React 19 frontend running inside Tauri/WebView2.
+  * The `platform`, `app`, `cli`, `ipc` and `watchdog` crates were not copied
+    wholesale; only the portable logic was re-implemented in
+    `src-tauri/src/fence/`:
+      - `model.rs`   — fence/item/layout data model
+      - `rules.rs`   — rule engine (schemars and i18n removed)
+      - `desktop.rs` — desktop folder enumeration and item merging
+      - `icons.rs`   — IShellItemImageFactory icon extraction and disk cache
+      - `monitor.rs` — monitor enumeration and layout fingerprint matching
+      - `window.rs`  — Progman/WorkerW discovery, icon hiding, z-order
+      - `shortcut.rs`— `.lnk`/`.url` target parsing (binary MS-SHLLINK parser
+                       instead of the IShellLink COM interface)
+  * The configuration format was changed (UUID-keyed maps, `AssignedBy::Default`
+    added so the rule engine can take over default-routed items).
+  * The CLI, AI-agent integration, portal fences and the watchdog process are
+    not implemented.
+
+================================================================================
+Floral Notepaper — MIT License
+================================================================================
+
+Renown is a fork of Floral Notepaper.
+
+    Copyright (c) 2026 Achilng
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to
+    deal in the Software without restriction, including without limitation the
+    rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+    sell copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+    IN THE SOFTWARE.
+
+    Upstream: https://github.com/Achilng/floral-notepaper
+
+================================================================================
+Fonts and other assets
+================================================================================
+
+HarmonyOS Sans SC is distributed under its own license; see
+`src/assets/fonts/LICENSE_Fonts`. KaTeX fonts are distributed under the MIT
+License. Other third-party components keep their own licenses.
