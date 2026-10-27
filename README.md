@@ -43,6 +43,28 @@ npx tauri build --no-bundle      # 只产出 exe，不打包安装器
 
 产物位置：`src-tauri/target/release/`
 
+### 一键发行包
+
+```powershell
+pwsh -File scripts/build-release.ps1                # 输出到 ../dist
+pwsh -File scripts/build-release.ps1 -OutDir D:\out
+```
+
+会产出（在 `dist/`）：
+
+| 文件                            | 说明                                             |
+| ------------------------------- | ------------------------------------------------ |
+| `Renown_<ver>_x64-setup.exe`    | NSIS 安装包（当前用户安装，无需管理员）          |
+| `Renown-Portable-<ver>-x64.exe` | 免安装单文件 exe                                 |
+| `README.txt`                    | 面向使用者的说明（`scripts/RELEASE-README.txt`） |
+| `SHA256SUMS.txt`                | 校验和                                           |
+
+并在上级目录生成 `Renown-<ver>-x64.zip` 整包，可直接分发。
+
+脚本会先检查 `%LOCALAPPDATA%\tauri\NSIS` 是否完整；缺失时自动下载并预置
+（**绕开被 hosts 屏蔽的 github.com，按 IP 直连**），然后才调用 `tauri build`。
+因此即使本机 hosts 把 github.com 指向 127.0.0.1，也能正常打包。
+
 ## 测试
 
 ```powershell
